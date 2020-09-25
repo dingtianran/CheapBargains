@@ -1,0 +1,421 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 52;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		6F4BFDC2251AC05E009A5AA3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4BFDC1251AC05E009A5AA3 /* AppDelegate.swift */; };
+		6F4BFDC4251AC05E009A5AA3 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4BFDC3251AC05E009A5AA3 /* SceneDelegate.swift */; };
+		6F4BFDC6251AC05E009A5AA3 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4BFDC5251AC05E009A5AA3 /* ViewController.swift */; };
+		6F4BFDC9251AC05E009A5AA3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6F4BFDC7251AC05E009A5AA3 /* Main.storyboard */; };
+		6F4BFDCB251AC060009A5AA3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6F4BFDCA251AC060009A5AA3 /* Assets.xcassets */; };
+		6F4BFDCE251AC060009A5AA3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6F4BFDCC251AC060009A5AA3 /* LaunchScreen.storyboard */; };
+		6F4BFDF2251B0E06009A5AA3 /* ItemCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4BFDF1251B0E06009A5AA3 /* ItemCell.swift */; };
+		6F4BFDFC251C40E1009A5AA3 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 6F4BFDFB251C40E1009A5AA3 /* Alamofire */; };
+		6F4BFE02251C4251009A5AA3 /* SWXMLHash in Frameworks */ = {isa = PBXBuildFile; productRef = 6F4BFE01251C4251009A5AA3 /* SWXMLHash */; };
+		6F4BFE06251C53CF009A5AA3 /* RSSModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4BFE05251C53CF009A5AA3 /* RSSModels.swift */; };
+		6F9A3CB1251D7E0D00144130 /* AlamofireImage in Frameworks */ = {isa = PBXBuildFile; productRef = 6F9A3CB0251D7E0D00144130 /* AlamofireImage */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		6F4BFDBE251AC05E009A5AA3 /* Cheapiez.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Cheapiez.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		6F4BFDC1251AC05E009A5AA3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		6F4BFDC3251AC05E009A5AA3 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		6F4BFDC5251AC05E009A5AA3 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		6F4BFDC8251AC05E009A5AA3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		6F4BFDCA251AC060009A5AA3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		6F4BFDCD251AC060009A5AA3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		6F4BFDCF251AC060009A5AA3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		6F4BFDD6251AC068009A5AA3 /* Cheapiez.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Cheapiez.entitlements; sourceTree = "<group>"; };
+		6F4BFDF1251B0E06009A5AA3 /* ItemCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemCell.swift; sourceTree = "<group>"; };
+		6F4BFE05251C53CF009A5AA3 /* RSSModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RSSModels.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		6F4BFDBB251AC05E009A5AA3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6F4BFE02251C4251009A5AA3 /* SWXMLHash in Frameworks */,
+				6F4BFDFC251C40E1009A5AA3 /* Alamofire in Frameworks */,
+				6F9A3CB1251D7E0D00144130 /* AlamofireImage in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		6F4BFDB5251AC05E009A5AA3 = {
+			isa = PBXGroup;
+			children = (
+				6F4BFDC0251AC05E009A5AA3 /* Cheapiez */,
+				6F4BFDBF251AC05E009A5AA3 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		6F4BFDBF251AC05E009A5AA3 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				6F4BFDBE251AC05E009A5AA3 /* Cheapiez.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		6F4BFDC0251AC05E009A5AA3 /* Cheapiez */ = {
+			isa = PBXGroup;
+			children = (
+				6F4BFDD6251AC068009A5AA3 /* Cheapiez.entitlements */,
+				6F4BFDC1251AC05E009A5AA3 /* AppDelegate.swift */,
+				6F4BFDC3251AC05E009A5AA3 /* SceneDelegate.swift */,
+				6F4BFDC5251AC05E009A5AA3 /* ViewController.swift */,
+				6F4BFDF1251B0E06009A5AA3 /* ItemCell.swift */,
+				6F4BFE05251C53CF009A5AA3 /* RSSModels.swift */,
+				6F4BFDC7251AC05E009A5AA3 /* Main.storyboard */,
+				6F4BFDCA251AC060009A5AA3 /* Assets.xcassets */,
+				6F4BFDCC251AC060009A5AA3 /* LaunchScreen.storyboard */,
+				6F4BFDCF251AC060009A5AA3 /* Info.plist */,
+			);
+			path = Cheapiez;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		6F4BFDBD251AC05E009A5AA3 /* Cheapiez */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6F4BFDD2251AC060009A5AA3 /* Build configuration list for PBXNativeTarget "Cheapiez" */;
+			buildPhases = (
+				6F4BFDBA251AC05E009A5AA3 /* Sources */,
+				6F4BFDBB251AC05E009A5AA3 /* Frameworks */,
+				6F4BFDBC251AC05E009A5AA3 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Cheapiez;
+			packageProductDependencies = (
+				6F4BFDFB251C40E1009A5AA3 /* Alamofire */,
+				6F4BFE01251C4251009A5AA3 /* SWXMLHash */,
+				6F9A3CB0251D7E0D00144130 /* AlamofireImage */,
+			);
+			productName = Cheapiez;
+			productReference = 6F4BFDBE251AC05E009A5AA3 /* Cheapiez.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		6F4BFDB6251AC05E009A5AA3 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1200;
+				LastUpgradeCheck = 1200;
+				TargetAttributes = {
+					6F4BFDBD251AC05E009A5AA3 = {
+						CreatedOnToolsVersion = 12.0;
+					};
+				};
+			};
+			buildConfigurationList = 6F4BFDB9251AC05E009A5AA3 /* Build configuration list for PBXProject "Cheapiez" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 6F4BFDB5251AC05E009A5AA3;
+			packageReferences = (
+				6F4BFDFA251C40E1009A5AA3 /* XCRemoteSwiftPackageReference "Alamofire" */,
+				6F4BFE00251C4251009A5AA3 /* XCRemoteSwiftPackageReference "SWXMLHash" */,
+				6F9A3CAF251D7E0D00144130 /* XCRemoteSwiftPackageReference "AlamofireImage" */,
+			);
+			productRefGroup = 6F4BFDBF251AC05E009A5AA3 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				6F4BFDBD251AC05E009A5AA3 /* Cheapiez */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		6F4BFDBC251AC05E009A5AA3 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6F4BFDCE251AC060009A5AA3 /* LaunchScreen.storyboard in Resources */,
+				6F4BFDCB251AC060009A5AA3 /* Assets.xcassets in Resources */,
+				6F4BFDC9251AC05E009A5AA3 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		6F4BFDBA251AC05E009A5AA3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6F4BFDF2251B0E06009A5AA3 /* ItemCell.swift in Sources */,
+				6F4BFDC6251AC05E009A5AA3 /* ViewController.swift in Sources */,
+				6F4BFE06251C53CF009A5AA3 /* RSSModels.swift in Sources */,
+				6F4BFDC2251AC05E009A5AA3 /* AppDelegate.swift in Sources */,
+				6F4BFDC4251AC05E009A5AA3 /* SceneDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		6F4BFDC7251AC05E009A5AA3 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				6F4BFDC8251AC05E009A5AA3 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		6F4BFDCC251AC060009A5AA3 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				6F4BFDCD251AC060009A5AA3 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		6F4BFDD0251AC060009A5AA3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		6F4BFDD1251AC060009A5AA3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		6F4BFDD3251AC060009A5AA3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Cheapiez/Cheapiez.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 9SC758JJ9F;
+				INFOPLIST_FILE = Cheapiez/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.iDing.Cheapiez;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTS_MACCATALYST = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		6F4BFDD4251AC060009A5AA3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Cheapiez/Cheapiez.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 9SC758JJ9F;
+				INFOPLIST_FILE = Cheapiez/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.iDing.Cheapiez;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTS_MACCATALYST = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		6F4BFDB9251AC05E009A5AA3 /* Build configuration list for PBXProject "Cheapiez" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6F4BFDD0251AC060009A5AA3 /* Debug */,
+				6F4BFDD1251AC060009A5AA3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		6F4BFDD2251AC060009A5AA3 /* Build configuration list for PBXNativeTarget "Cheapiez" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6F4BFDD3251AC060009A5AA3 /* Debug */,
+				6F4BFDD4251AC060009A5AA3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		6F4BFDFA251C40E1009A5AA3 /* XCRemoteSwiftPackageReference "Alamofire" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Alamofire/Alamofire.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.2.2;
+			};
+		};
+		6F4BFE00251C4251009A5AA3 /* XCRemoteSwiftPackageReference "SWXMLHash" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/drmohundro/SWXMLHash.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.0.1;
+			};
+		};
+		6F9A3CAF251D7E0D00144130 /* XCRemoteSwiftPackageReference "AlamofireImage" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Alamofire/AlamofireImage.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.1.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		6F4BFDFB251C40E1009A5AA3 /* Alamofire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6F4BFDFA251C40E1009A5AA3 /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = Alamofire;
+		};
+		6F4BFE01251C4251009A5AA3 /* SWXMLHash */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6F4BFE00251C4251009A5AA3 /* XCRemoteSwiftPackageReference "SWXMLHash" */;
+			productName = SWXMLHash;
+		};
+		6F9A3CB0251D7E0D00144130 /* AlamofireImage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6F9A3CAF251D7E0D00144130 /* XCRemoteSwiftPackageReference "AlamofireImage" */;
+			productName = AlamofireImage;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 6F4BFDB6251AC05E009A5AA3 /* Project object */;
+}
