@@ -27,6 +27,12 @@ class ItemCell: UITableViewCell {
         }
     }
     
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        //set zero margins for text view
+        descView.textContainerInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+    }
+    
     func updateWithItem(_ item: RSSItem) {
         //entry title
         titleLabel.text = item.title
@@ -42,15 +48,39 @@ class ItemCell: UITableViewCell {
     
     func composeDateStringFrom(_ item: RSSItem) -> NSAttributedString {
         let attr = NSMutableAttributedString()
-        
+        //creator
+        let creator = item.creator ?? "N/A"
+        let attributesCreator: [NSAttributedString.Key: Any] = [
+            .font: UIFont.boldSystemFont(ofSize: 16),
+            .foregroundColor: UIColor(red: 1.0/256.0, green: 25.0/256.0, blue: 147.0/256.0, alpha: 1.0),
+        ]
+        let creatorAttr = NSAttributedString(string: creator, attributes: attributesCreator)
+        attr.append(creatorAttr)
+        //date
+//        let on
         return attr
     }
     
     func composeDescStringFrom(_ item: RSSItem) -> NSAttributedString? {
-        guard let html = item.description else { return nil }
+        guard let input = item.description else { return nil }
+        let html = formattingDescription(input)
         let fullHtml = htmlHead + html + htmlTail
         let data = Data(fullHtml.utf8)
         return try? NSAttributedString(data: data, options: [.documentType: NSAttributedString.DocumentType.html], documentAttributes: nil)
+    }
+    
+    //Get rid of the first div which is a web hack for thumbnail
+    func formattingDescription(_ input: String) -> String {
+        let regex = try? NSRegularExpression(pattern: "\\<div(.*)\\<\\/div\\>", options: .caseInsensitive)
+        let matches = regex!.matches(in: input, options: [], range: NSRange(location: 0, length: input.utf16.count))
+        if let match = matches.first {
+            let range = match.range(at:0)
+            if let divRange = Range(range, in: input) {
+                let imageDIV = input[divRange]
+                return input.replacingOccurrences(of: imageDIV, with: "")
+            }
+        }
+        return ""
     }
     
     @objc func hovering(_ recognizer: UIHoverGestureRecognizer) {
@@ -66,6 +96,13 @@ class ItemCell: UITableViewCell {
     
     let htmlHead = """
     <html>
+    <head>
+    <style>
+    p {
+      font-size: 12px;
+    }
+    </style>
+    </head>
     <body>
     """
     

@@ -20,4 +20,10 @@ struct RSSItem {
     let pubDate: Date?
     let imageURL: String?
     let category: [Category]?
+    
+    private static let dateFormatter: DateFormatter = {
+            let df = DateFormatter()
+            df.dateFormat = "yyyy-MM-dd hh:mm:ss"
+            return df
+    }()
 }
