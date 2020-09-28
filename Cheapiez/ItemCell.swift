@@ -30,7 +30,7 @@ class ItemCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         //set zero margins for text view
-        descView.textContainerInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        descView.textContainerInset = UIEdgeInsets(top: 8.0, left: 0, bottom: 0, right: 0)
     }
     
     func updateWithItem(_ item: RSSItem) {
@@ -49,7 +49,7 @@ class ItemCell: UITableViewCell {
     private static var rssFormatter: DateFormatter {
         get {
             let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "dd/MM/yyyy - hh:mm"
+            dateFormatter.dateFormat = "dd/MM/yyyy - HH:mm"
             dateFormatter.locale = NSLocale.current
             return dateFormatter
         }
@@ -68,7 +68,7 @@ class ItemCell: UITableViewCell {
         //date
         let attributesDate: [NSAttributedString.Key: Any] = [
             .font: UIFont.systemFont(ofSize: 14),
-            .foregroundColor: UIColor.lightGray,
+            .foregroundColor: UIColor(white: 0.5, alpha: 1.0),
         ]
         if let date = item.pubDate {
             let dateStr = " on " + ItemCell.rssFormatter.string(from: date)
@@ -119,7 +119,7 @@ class ItemCell: UITableViewCell {
     <head>
     <style>
     p {
-      font-size: 12px;
+      font-size: 16px;
     }
     </style>
     </head>

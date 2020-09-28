@@ -12,13 +12,15 @@ import SWXMLHash
 class ViewController: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var sourceSelector: UISegmentedControl!
     
     var rssItems: [RSSItem]?
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let url = "https://www.cheapies.nz/deals/feed"
+        //let url = "https://www.cheapies.nz/deals/feed"
+        let url = "https://www.ozbargain.com.au/deals/feed"
 
         AF.request(url).responseString { (response: AFDataResponse<String>) in
             switch response.result {
@@ -77,6 +79,8 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        let item = rssItems![indexPath.row]
+        UIApplication.shared.open(URL(string: item.link!)!)
     }
 }
 

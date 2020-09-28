@@ -17,7 +17,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="140" estimatedRowHeight="100" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="NKr-rV-d9L">
-                                <rect key="frame" x="0.0" y="0.0" width="800" height="600"/>
+                                <rect key="frame" x="0.0" y="44" width="800" height="556"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <color key="separatorColor" systemColor="separatorColor"/>
                                 <prototypes>
@@ -55,7 +55,7 @@
                                                 </label>
                                                 <textView clipsSubviews="YES" multipleTouchEnabled="YES" userInteractionEnabled="NO" contentMode="scaleToFill" bounces="NO" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" bouncesZoom="NO" editable="NO" usesAttributedText="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2JY-TY-GDU">
                                                     <rect key="frame" x="15" y="52" width="686" height="78"/>
-                                                    <color key="backgroundColor" systemColor="systemYellowColor"/>
+                                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <attributedString key="attributedText"/>
                                                     <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                                 </textView>
@@ -88,17 +88,40 @@
                                     <outlet property="delegate" destination="BYZ-38-t0r" id="bCM-zJ-mI2"/>
                                 </connections>
                             </tableView>
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="J49-X1-fEs">
+                                <rect key="frame" x="0.0" y="0.0" width="800" height="44"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="fkN-5a-a9a"/>
+                                </constraints>
+                                <items>
+                                    <barButtonItem style="plain" id="W2S-SJ-6AQ">
+                                        <segmentedControl key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" id="B0w-ti-Nox">
+                                            <rect key="frame" x="20" y="6" width="168" height="32"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <segments>
+                                                <segment title="Cheapies"/>
+                                                <segment title="OzBargain"/>
+                                            </segments>
+                                        </segmentedControl>
+                                    </barButtonItem>
+                                    <barButtonItem width="100" style="plain" systemItem="flexibleSpace" id="ihn-PV-xtC"/>
+                                </items>
+                            </toolbar>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="NKr-rV-d9L" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="AcW-zq-oQo"/>
+                            <constraint firstItem="J49-X1-fEs" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="1rv-Ic-VaR"/>
+                            <constraint firstItem="J49-X1-fEs" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="4DP-Xn-Vd0"/>
+                            <constraint firstItem="J49-X1-fEs" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="TTj-Lb-yzT"/>
+                            <constraint firstItem="NKr-rV-d9L" firstAttribute="top" secondItem="J49-X1-fEs" secondAttribute="bottom" id="XPc-Lw-s4N"/>
                             <constraint firstItem="NKr-rV-d9L" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="s5r-NU-MCm"/>
                             <constraint firstItem="NKr-rV-d9L" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="sTD-9b-U5T"/>
                             <constraint firstItem="NKr-rV-d9L" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="wDi-zq-iLb"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="sourceSelector" destination="B0w-ti-Nox" id="vSk-vJ-iU5"/>
                         <outlet property="tableView" destination="NKr-rV-d9L" id="99n-pr-h9x"/>
                     </connections>
                 </viewController>
@@ -113,9 +136,6 @@
         </systemColor>
         <systemColor name="systemBackgroundColor">
             <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-        </systemColor>
-        <systemColor name="systemYellowColor">
-            <color red="1" green="0.80000000000000004" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>
