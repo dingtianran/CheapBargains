@@ -102,7 +102,16 @@
                                                 <segment title="Cheapies"/>
                                                 <segment title="OzBargain"/>
                                             </segments>
+                                            <connections>
+                                                <action selector="sourceValueChanged:" destination="BYZ-38-t0r" eventType="valueChanged" id="a3V-hT-Vdj"/>
+                                            </connections>
                                         </segmentedControl>
+                                    </barButtonItem>
+                                    <barButtonItem width="15" style="plain" systemItem="fixedSpace" id="MXz-8Y-4Gd"/>
+                                    <barButtonItem systemItem="refresh" id="JzX-jJ-wdx">
+                                        <connections>
+                                            <action selector="forceRefreshButtonPressed:" destination="BYZ-38-t0r" id="eIj-G3-tya"/>
+                                        </connections>
                                     </barButtonItem>
                                     <barButtonItem width="100" style="plain" systemItem="flexibleSpace" id="ihn-PV-xtC"/>
                                 </items>

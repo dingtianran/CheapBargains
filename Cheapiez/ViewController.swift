@@ -13,20 +13,33 @@ class ViewController: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var sourceSelector: UISegmentedControl!
+    var sourceURL = "https://www.cheapies.nz/deals/feed"
     
-    var rssItems: [RSSItem]?
+    var cheapiesUpdatedDate: Date?
+    var ozbUpdatedDate: Date?
+    
+    var cheapiesRssItems: [RSSItem]?
+    var ozbRssItems: [RSSItem]?
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        sourceSelector.apportionsSegmentWidthsByContent = true
         
-        //let url = "https://www.cheapies.nz/deals/feed"
-        let url = "https://www.ozbargain.com.au/deals/feed"
-
-        AF.request(url).responseString { (response: AFDataResponse<String>) in
+        reloadSourceFromRSS()
+    }
+    
+    func reloadSourceFromRSS() {
+        AF.request(sourceURL).responseString { (response: AFDataResponse<String>) in
             switch response.result {
             case .success:
                 if let newItems = self.processXML(response.value) {
-                    self.rssItems = newItems
+                    if self.sourceURL == "https://www.cheapies.nz/deals/feed" {
+                        self.cheapiesRssItems = newItems
+                        self.cheapiesUpdatedDate = Date()
+                    } else if self.sourceURL == "https://www.ozbargain.com.au/deals/feed" {
+                        self.ozbRssItems = newItems
+                        self.ozbUpdatedDate = Date()
+                    }
                 }
                 self.tableView.reloadData()
             case let .failure(error):
@@ -59,6 +72,19 @@ class ViewController: UIViewController {
         }
         return items
     }
+    
+    @IBAction func sourceValueChanged(_ sender: Any) {
+        switch sourceSelector.selectedSegmentIndex {
+        case 0:
+            sourceURL = "https://www.cheapies.nz/deals/feed"
+        default:
+            sourceURL = "https://www.ozbargain.com.au/deals/feed"
+        }
+    }
+    
+    @IBAction func forceRefreshButtonPressed(_ sender: Any) {
+        reloadSourceFromRSS()
+    }
 }
 
 extension ViewController: UITableViewDelegate, UITableViewDataSource {
@@ -68,19 +94,34 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        rssItems?.count ?? 0
+        if self.sourceURL == "https://www.cheapies.nz/deals/feed" {
+            return cheapiesRssItems?.count ?? 0
+        } else if self.sourceURL == "https://www.ozbargain.com.au/deals/feed" {
+            return ozbRssItems?.count ?? 0
+        } else {
+            return 0
+        }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: ItemCell.identifier) as! ItemCell
-        cell.updateWithItem(rssItems![indexPath.row])
+        if self.sourceURL == "https://www.cheapies.nz/deals/feed" {
+            cell.updateWithItem(cheapiesRssItems![indexPath.row])
+        } else if self.sourceURL == "https://www.ozbargain.com.au/deals/feed" {
+            cell.updateWithItem(ozbRssItems![indexPath.row])
+        }
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        let item = rssItems![indexPath.row]
-        UIApplication.shared.open(URL(string: item.link!)!)
+        if self.sourceURL == "https://www.cheapies.nz/deals/feed" {
+            let item = cheapiesRssItems![indexPath.row]
+            UIApplication.shared.open(URL(string: item.link!)!)
+        } else if self.sourceURL == "https://www.ozbargain.com.au/deals/feed" {
+            let item = ozbRssItems![indexPath.row]
+            UIApplication.shared.open(URL(string: item.link!)!)
+        }
     }
 }
 
