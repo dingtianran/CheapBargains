@@ -12,6 +12,7 @@ import SWXMLHash
 class ViewController: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
+    
     var rssItems: [RSSItem]?
 
     override func viewDidLoad() {
@@ -61,7 +62,7 @@ class ViewController: UIViewController {
 extension ViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        100.0
+        140.0
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -80,6 +81,14 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
 }
 
 extension Date: XMLElementDeserializable, XMLAttributeDeserializable {
+    private static var rssFormatter: DateFormatter {
+        get {
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "EEE, dd MMM yyyy HH:mm:ss zzz"
+            return dateFormatter
+        }
+    }
+    
     public static func deserialize(_ element: XMLElement) throws -> Date {
         let date = stringToDate(element.text)
 
@@ -101,8 +110,6 @@ extension Date: XMLElementDeserializable, XMLAttributeDeserializable {
     }
 
     private static func stringToDate(_ dateAsString: String) -> Date? {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "EEE, dd MMM yyyy HH:mm:ss zzz"
-        return dateFormatter.date(from: dateAsString)
+        return rssFormatter.date(from: dateAsString)
     }
 }
