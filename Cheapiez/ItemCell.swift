@@ -46,18 +46,36 @@ class ItemCell: UITableViewCell {
         thumbnail.af.setImage(withURL: url)
     }
     
+    private static var rssFormatter: DateFormatter {
+        get {
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "dd/MM/yyyy - hh:mm"
+            dateFormatter.locale = NSLocale.current
+            return dateFormatter
+        }
+    }
+    
     func composeDateStringFrom(_ item: RSSItem) -> NSAttributedString {
         let attr = NSMutableAttributedString()
         //creator
         let creator = item.creator ?? "N/A"
         let attributesCreator: [NSAttributedString.Key: Any] = [
-            .font: UIFont.boldSystemFont(ofSize: 16),
+            .font: UIFont.boldSystemFont(ofSize: 14),
             .foregroundColor: UIColor(red: 1.0/256.0, green: 25.0/256.0, blue: 147.0/256.0, alpha: 1.0),
         ]
         let creatorAttr = NSAttributedString(string: creator, attributes: attributesCreator)
         attr.append(creatorAttr)
         //date
-//        let on
+        let attributesDate: [NSAttributedString.Key: Any] = [
+            .font: UIFont.systemFont(ofSize: 14),
+            .foregroundColor: UIColor.lightGray,
+        ]
+        if let date = item.pubDate {
+            let dateStr = " on " + ItemCell.rssFormatter.string(from: date)
+            let on = NSAttributedString(string: dateStr, attributes: attributesDate)
+            attr.append(on)
+        }
+        
         return attr
     }
     
@@ -71,16 +89,18 @@ class ItemCell: UITableViewCell {
     
     //Get rid of the first div which is a web hack for thumbnail
     func formattingDescription(_ input: String) -> String {
-        let regex = try? NSRegularExpression(pattern: "\\<div(.*)\\<\\/div\\>", options: .caseInsensitive)
-        let matches = regex!.matches(in: input, options: [], range: NSRange(location: 0, length: input.utf16.count))
+        var processed = input.replacingOccurrences(of: "\n", with: "")
+        let regex1 = try? NSRegularExpression(pattern: "\\<div(.*)\\<\\/div\\>", options: .caseInsensitive)
+        let matches = regex1!.matches(in: input, options: [], range: NSRange(location: 0, length: input.utf16.count))
         if let match = matches.first {
             let range = match.range(at:0)
             if let divRange = Range(range, in: input) {
-                let imageDIV = input[divRange]
-                return input.replacingOccurrences(of: imageDIV, with: "")
+                processed.removeSubrange(divRange)
             }
         }
-        return ""
+        //get rid of all tables
+        processed = processed.replacingOccurrences(of: "\\<table[^>]*\\>(.*?)\\<\\/table\\>", with: "", options: .regularExpression)
+        return processed
     }
     
     @objc func hovering(_ recognizer: UIHoverGestureRecognizer) {
