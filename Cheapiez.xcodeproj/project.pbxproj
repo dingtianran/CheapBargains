@@ -34,6 +34,7 @@
 		6F4BFDF1251B0E06009A5AA3 /* ItemCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemCell.swift; sourceTree = "<group>"; };
 		6F4BFE05251C53CF009A5AA3 /* RSSModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RSSModels.swift; sourceTree = "<group>"; };
 		6F651B9B25229FFA006F501B /* Pipeline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pipeline.swift; sourceTree = "<group>"; };
+		6F651B9F2522C276006F501B /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -53,6 +54,7 @@
 		6F4BFDB5251AC05E009A5AA3 = {
 			isa = PBXGroup;
 			children = (
+				6F651B9F2522C276006F501B /* README.md */,
 				6F4BFDC0251AC05E009A5AA3 /* Cheapiez */,
 				6F4BFDBF251AC05E009A5AA3 /* Products */,
 			);
@@ -324,6 +326,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.iDing.Cheapiez;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTS_MACCATALYST = YES;
@@ -345,6 +348,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.iDing.Cheapiez;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTS_MACCATALYST = YES;
