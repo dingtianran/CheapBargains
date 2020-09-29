@@ -27,3 +27,11 @@ struct RSSItem {
             return df
     }()
 }
+
+struct FeedEntry {
+    let title: String
+    let link: String
+    let imageURL: String
+    let subtitle: NSAttributedString
+    let desc: NSAttributedString
+}
