@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UserNotifications
 import Alamofire
 import SWXMLHash
 import UIKit
@@ -13,7 +14,7 @@ import UIKit
 class NetworkingPipeline {
     
     var sourceFeed: String
-    
+    var userIntentToSeeNotify: Bool
     var cheapiesUpdatedDate: Date?
     var chchlalUpdatedDate: Date?
     var ozbUpdatedDate: Date?
@@ -24,6 +25,7 @@ class NetworkingPipeline {
     
     init(initialFeed: String) {
         self.sourceFeed = initialFeed
+        self.userIntentToSeeNotify = UserDefaults.standard.bool(forKey: "UserWant2SeeNotification")
     }
     
     private static var rssFormatter: DateFormatter {
@@ -191,6 +193,34 @@ class NetworkingPipeline {
         }
     }
     
+    func getCurrentNotifyStatus(completion: @escaping (Bool, String?) -> Void) {
+        UNUserNotificationCenter.current().getNotificationSettings { (settings: UNNotificationSettings) in
+            DispatchQueue.main.async {
+                if settings.badgeSetting != .enabled || self.userIntentToSeeNotify == false {
+                    completion(false, "Enable notification here ->")
+                } else {
+                    completion(true, nil)
+                }
+            }
+        }
+    }
+    
+    func userSetEnableNotify(on: Bool, completion: @escaping (Bool, String?) -> Void) {
+        userIntentToSeeNotify = on
+        UserDefaults.standard.setValue(on, forKey: "UserWant2SeeNotification")
+        if on == true {
+            UNUserNotificationCenter.current().requestAuthorization(options: [.badge,.alert]) { (granted, error) in
+                DispatchQueue.main.async {
+                    if error != nil {
+                        completion(false, "notification is disabled")
+                    } else {
+                        completion(true, nil)
+                    }
+                }
+            }
+        }
+    }
+    
     let htmlHead = """
     <html>
     <head>
@@ -207,6 +237,11 @@ class NetworkingPipeline {
     </body>
     </html>
     """
+}
+
+struct NotificationHandler {
+    
+    
 }
 
 extension Date: XMLElementDeserializable, XMLAttributeDeserializable {

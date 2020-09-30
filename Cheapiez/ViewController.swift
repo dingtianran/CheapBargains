@@ -12,6 +12,8 @@ import SWXMLHash
 class ViewController: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var notifySwitch: UISwitch!
+    @IBOutlet weak var notifyMessage: UILabel!
     @IBOutlet weak var sourceSelector: UISegmentedControl!
     
     var pipeline: NetworkingPipeline!
@@ -23,8 +25,13 @@ class ViewController: UIViewController {
         //feed: cheapies by default
         pipeline = NetworkingPipeline(initialFeed: "https://www.cheapies.nz/deals/feed")
         //setup updating chain
-        NotificationCenter.default.addObserver(forName: NSNotification.Name(rawValue: "RSSFeedRefreshingReady"), object: nil, queue: OperationQueue.main) { (notification: Notification) in
+        NotificationCenter.default.addObserver(forName: NSNotification.Name("RSSFeedRefreshingReady"), object: nil, queue: OperationQueue.main) { (notification: Notification) in
             self.tableView.reloadData()
+        }
+        //setup notify status
+        pipeline.getCurrentNotifyStatus { (verdict: Bool, possibleMessage: String?) in
+            self.notifySwitch.isOn = verdict
+            self.notifyMessage.text = possibleMessage
         }
         reloadSourceFromRSS(forceRefresh: true)
     }
@@ -42,6 +49,15 @@ class ViewController: UIViewController {
     
     @IBAction func forceRefreshButtonPressed(_ sender: Any) {
         reloadSourceFromRSS(forceRefresh: true)
+    }
+    
+    @IBAction func notifyValueChanged(_ sender: Any) {
+        pipeline.userSetEnableNotify(on: notifySwitch.isOn) { (verdict: Bool, possibleMessage: String?) in
+            if verdict != self.notifySwitch.isOn {
+                self.notifySwitch.isOn = verdict
+            }
+            self.notifyMessage.text = possibleMessage
+        }
     }
 }
 
