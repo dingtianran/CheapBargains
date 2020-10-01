@@ -83,3 +83,10 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         UIApplication.shared.open(URL(string: item.link)!)
     }
 }
+
+extension ViewController: UNUserNotificationCenterDelegate {
+    
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        self.tableView.contentOffset = CGPoint(x: 0.0, y: 0.0)
+    }
+}

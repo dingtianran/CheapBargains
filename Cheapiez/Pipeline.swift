@@ -11,7 +11,7 @@ import Alamofire
 import SWXMLHash
 import UIKit
 
-class NetworkingPipeline {
+class NetworkingPipeline: NSObject {
     
     var sourceFeed: String
     var userIntentToSeeNotify: Bool
@@ -20,12 +20,20 @@ class NetworkingPipeline {
     var ozbUpdatedDate: Date?
     
     var cheapiesRssItems: [FeedEntry]?
-    var chchlalRssItems: [FeedEntry]?
+    var cheapiesKeyBucket = [String]()
+    var chchlahRssItems: [FeedEntry]?
+    var chchlahKeyBucket = [String]()
     var ozbRssItems: [FeedEntry]?
+    var ozbKeyBucket = [String]()
     
     init(initialFeed: String) {
         self.sourceFeed = initialFeed
         self.userIntentToSeeNotify = UserDefaults.standard.bool(forKey: "UserWant2SeeNotification")
+        
+        //clear notify badge number when user enter foreground
+        NotificationCenter.default.addObserver(forName: NSNotification.Name("NSApplicationDidBecomeActiveNotification"), object: nil, queue: OperationQueue.main) { (notification: Notification) in
+            UIApplication.shared.applicationIconBadgeNumber = 0
+        }
     }
     
     private static var rssFormatter: DateFormatter {
@@ -85,7 +93,7 @@ class NetworkingPipeline {
                                 self.ozbRssItems = newItems
                                 self.ozbUpdatedDate = Date()
                             } else if self.sourceFeed == "https://www.cheapcheaplah.com/deals/feed" {
-                                self.chchlalRssItems = newItems
+                                self.chchlahRssItems = newItems
                                 self.chchlalUpdatedDate = Date()
                             }
                         }
@@ -105,6 +113,7 @@ class NetworkingPipeline {
         guard let xmlString = xml else { return nil }
         let parser = SWXMLHash.parse(xmlString)
         var items = [FeedEntry]()
+        var newIncomingBucket = [FeedEntry]()
         for item in parser["rss"]["channel"]["item"].all {
             //assembly categorris
             var categories = [Category]()
@@ -120,10 +129,37 @@ class NetworkingPipeline {
             let creator = item["dc:creator"].element?.text
             let pubDate: Date? = try? item["pubDate"].value()
             let thumbnail = item["media:thumbnail"].element?.attribute(by: "url")?.text
-            let entry = RSSItem(title: title, link: link, description: desc, creator: creator, pubDate: pubDate, imageURL: thumbnail, category: categories.count>0 ? categories:nil)
+            let guid = item["guid"].element?.text
+            let entry = RSSItem(title: title, link: link, description: desc, creator: creator, pubDate: pubDate, imageURL: thumbnail, category: categories.count>0 ? categories:nil, guid: guid)
             let vm = assembleVModelFrom(rssModel: entry)
             items.append(vm)
+            
+            if let id = guid {
+                if sourceFeed == "https://www.cheapies.nz/deals/feed" {
+                    if !cheapiesKeyBucket.contains(id) {
+                        cheapiesKeyBucket.append(id)
+                        if cheapiesKeyBucket.count > 1 {
+                            newIncomingBucket.append(vm)
+                        }
+                    }
+                } else if sourceFeed == "https://www.ozbargain.com.au/deals/feed" {
+                    if !ozbKeyBucket.contains(id) {
+                        ozbKeyBucket.append(id)
+                        if ozbKeyBucket.count > 1 {
+                            newIncomingBucket.append(vm)
+                        }
+                    }
+                } else if sourceFeed == "https://www.cheapcheaplah.com/deals/feed" {
+                    if !chchlahKeyBucket.contains(id) {
+                        chchlahKeyBucket.append(id)
+                        if chchlahKeyBucket.count > 1 {
+                            newIncomingBucket.append(vm)
+                        }
+                    }
+                }
+            }
         }
+        handleNewIncoming(items: newIncomingBucket)
         return items
     }
     
@@ -157,11 +193,20 @@ class NetworkingPipeline {
         let data = Data(fullHtml.utf8)
         let desc = try? NSAttributedString(data: data, options: [.documentType: NSAttributedString.DocumentType.html], documentAttributes: nil)
         
+        //categorys
+        var cats = [String]()
+        if let categories = rssModel.category {
+            for cat in categories {
+                cats.append(cat.text!)
+            }
+        }
+        
         let vm = FeedEntry(title: rssModel.title ?? "",
                            link: rssModel.link ?? "",
                            imageURL: rssModel.imageURL ?? "",
                            subtitle: attr,
-                           desc: desc ?? blank)
+                           desc: desc ?? blank,
+                           category: cats)
         return vm
     }
     
@@ -187,7 +232,7 @@ class NetworkingPipeline {
         } else if self.sourceFeed == "https://www.ozbargain.com.au/deals/feed" {
             return ozbRssItems ?? [FeedEntry]()
         } else if self.sourceFeed == "https://www.cheapcheaplah.com/deals/feed" {
-            return chchlalRssItems ?? [FeedEntry]()
+            return chchlahRssItems ?? [FeedEntry]()
         } else {
             return [FeedEntry]()
         }
@@ -239,8 +284,52 @@ class NetworkingPipeline {
     """
 }
 
-struct NotificationHandler {
+//Handling notification
+extension NetworkingPipeline: UNUserNotificationCenterDelegate {
+    func handleNewIncoming(items: [FeedEntry]) {
+        if items.count > 1 {
+            let content = UNMutableNotificationContent()
+            content.title = "More new cheapies are available"
+            content.body = extractCategoriesFrom(items: items)
+            content.badge = NSNumber(value: items.count)
+            content.sound = .none
+            let identifier = "LocalNotification"
+            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1,
+              repeats: false)
+            let request = UNNotificationRequest(identifier: identifier,
+              content: content, trigger: trigger)
+            UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
+        } else if items.count == 1 {
+            let content = UNMutableNotificationContent()
+            content.title = "One new cheapie is available"
+            content.body = extractCategoriesFrom(items: items)
+            content.badge = NSNumber(value: 1)
+            content.sound = .none
+            let identifier = "LocalNotification"
+            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1,
+              repeats: false)
+            let request = UNNotificationRequest(identifier: identifier,
+              content: content, trigger: trigger)
+            UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
+        }
+    }
     
+    func extractCategoriesFrom(items: [FeedEntry]) -> String {
+        let keyDict = items.reduce([String: Int]()) { (result: [String: Int], item: FeedEntry) -> [String: Int] in
+            var varResult = result
+            for cat in item.category {
+                varResult[cat] = 1
+            }
+            return varResult
+        }
+        let keys = Array(keyDict.keys)
+        let msg = keys.joined(separator: ", ")
+        if items.count>1 {
+            return "Categories: " + msg
+        } else {
+            return "Category: " + msg
+        }
+    }
     
 }
 
