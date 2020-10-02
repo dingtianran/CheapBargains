@@ -22,6 +22,7 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         sourceSelector.apportionsSegmentWidthsByContent = true
         
+        UNUserNotificationCenter.current().delegate = self
         //feed: cheapies by default
         pipeline = NetworkingPipeline(initialFeed: "https://www.cheapies.nz/deals/feed")
         //setup updating chain
@@ -31,7 +32,6 @@ class ViewController: UIViewController {
         //setup notify status
         pipeline.getCurrentNotifyStatus { (verdict: Bool, possibleMessage: String?) in
             self.notifySwitch.isOn = verdict
-            self.notifyMessage.text = possibleMessage
         }
         reloadSourceFromRSS(forceRefresh: true)
     }
@@ -56,7 +56,6 @@ class ViewController: UIViewController {
             if verdict != self.notifySwitch.isOn {
                 self.notifySwitch.isOn = verdict
             }
-            self.notifyMessage.text = possibleMessage
         }
     }
 }
@@ -88,5 +87,6 @@ extension ViewController: UNUserNotificationCenterDelegate {
     
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
         self.tableView.contentOffset = CGPoint(x: 0.0, y: 0.0)
+        completionHandler()
     }
 }

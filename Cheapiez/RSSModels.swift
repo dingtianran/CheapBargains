@@ -30,6 +30,7 @@ struct RSSItem {
 }
 
 struct FeedEntry {
+    let id: String
     let title: String
     let link: String
     let imageURL: String

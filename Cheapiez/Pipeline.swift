@@ -13,11 +13,13 @@ import UIKit
 
 class NetworkingPipeline: NSObject {
     
+    var previousSourceIndex = 0
     var sourceFeed: String
     var userIntentToSeeNotify: Bool
     var cheapiesUpdatedDate: Date?
     var chchlalUpdatedDate: Date?
     var ozbUpdatedDate: Date?
+    var refreshTimer: Timer
     
     var cheapiesRssItems: [FeedEntry]?
     var cheapiesKeyBucket = [String]()
@@ -29,7 +31,7 @@ class NetworkingPipeline: NSObject {
     init(initialFeed: String) {
         self.sourceFeed = initialFeed
         self.userIntentToSeeNotify = UserDefaults.standard.bool(forKey: "UserWant2SeeNotification")
-        
+        self.refreshTimer = Timer()
         //clear notify badge number when user enter foreground
         NotificationCenter.default.addObserver(forName: NSNotification.Name("NSApplicationDidBecomeActiveNotification"), object: nil, queue: OperationQueue.main) { (notification: Notification) in
             UIApplication.shared.applicationIconBadgeNumber = 0
@@ -45,6 +47,19 @@ class NetworkingPipeline: NSObject {
         }
     }
     
+    func resetTimerForNextRefresh() {
+        //setup refresh freq to every 180 sec
+        if self.refreshTimer.isValid {
+            self.refreshTimer.invalidate()
+        }
+        self.refreshTimer = Timer.scheduledTimer(timeInterval: 180.0, target: self, selector: #selector(refreshTimerHandler(_:)), userInfo: nil, repeats: false)
+    }
+    
+    @objc func refreshTimerHandler(_ sender: Timer) {
+        print("Timer fired!")
+        _ = reload(sourceIndex: previousSourceIndex, force: true)
+    }
+    
     //Return isReady
     func reload(sourceIndex: Int, force: Bool) -> Bool {
         switch sourceIndex {
@@ -58,7 +73,7 @@ class NetworkingPipeline: NSObject {
             //cheapies
             sourceFeed = "https://www.cheapies.nz/deals/feed"
         }
-        
+        previousSourceIndex = sourceIndex
         var pendingRefrsh = true
         if sourceFeed == "https://www.cheapies.nz/deals/feed" {
             if let previous = cheapiesUpdatedDate {
@@ -103,6 +118,7 @@ class NetworkingPipeline: NSObject {
                     print(error)
                 }
             }
+            resetTimerForNextRefresh()
             return false
         } else {
             return true
@@ -137,29 +153,35 @@ class NetworkingPipeline: NSObject {
             if let id = guid {
                 if sourceFeed == "https://www.cheapies.nz/deals/feed" {
                     if !cheapiesKeyBucket.contains(id) {
-                        cheapiesKeyBucket.append(id)
-                        if cheapiesKeyBucket.count > 1 {
-                            newIncomingBucket.append(vm)
-                        }
+                        newIncomingBucket.append(vm)
                     }
                 } else if sourceFeed == "https://www.ozbargain.com.au/deals/feed" {
                     if !ozbKeyBucket.contains(id) {
-                        ozbKeyBucket.append(id)
-                        if ozbKeyBucket.count > 1 {
-                            newIncomingBucket.append(vm)
-                        }
+                        newIncomingBucket.append(vm)
                     }
                 } else if sourceFeed == "https://www.cheapcheaplah.com/deals/feed" {
                     if !chchlahKeyBucket.contains(id) {
-                        chchlahKeyBucket.append(id)
-                        if chchlahKeyBucket.count > 1 {
-                            newIncomingBucket.append(vm)
-                        }
+                        newIncomingBucket.append(vm)
                     }
                 }
             }
         }
-        handleNewIncoming(items: newIncomingBucket)
+        if sourceFeed == "https://www.cheapies.nz/deals/feed" {
+            if cheapiesKeyBucket.count > 0 {
+                handleNewIncoming(items: newIncomingBucket, for: "Cheapies")
+            }
+            cheapiesKeyBucket.append(contentsOf: newIncomingBucket.map({ $0.id }))
+        } else if sourceFeed == "https://www.ozbargain.com.au/deals/feed" {
+            if ozbKeyBucket.count > 0 {
+                handleNewIncoming(items: newIncomingBucket, for: "OzBargain")
+            }
+            ozbKeyBucket.append(contentsOf: newIncomingBucket.map({ $0.id }))
+        } else if sourceFeed == "https://www.cheapcheaplah.com/deals/feed" {
+            if chchlahKeyBucket.count > 0 {
+                handleNewIncoming(items: newIncomingBucket, for: "CheapcheapLah")
+            }
+            chchlahKeyBucket.append(contentsOf: newIncomingBucket.map({ $0.id }))
+        }
         return items
     }
     
@@ -201,7 +223,8 @@ class NetworkingPipeline: NSObject {
             }
         }
         
-        let vm = FeedEntry(title: rssModel.title ?? "",
+        let vm = FeedEntry(id: rssModel.guid ?? "",
+                           title: rssModel.title ?? "",
                            link: rssModel.link ?? "",
                            imageURL: rssModel.imageURL ?? "",
                            subtitle: attr,
@@ -286,11 +309,11 @@ class NetworkingPipeline: NSObject {
 
 //Handling notification
 extension NetworkingPipeline: UNUserNotificationCenterDelegate {
-    func handleNewIncoming(items: [FeedEntry]) {
+    func handleNewIncoming(items: [FeedEntry], for source:String) {
         if items.count > 1 {
             let content = UNMutableNotificationContent()
-            content.title = "More new cheapies are available"
-            content.body = extractCategoriesFrom(items: items)
+            content.title = "More new goodies are available at " + source
+            content.body = extractSubtitleFrom(items: items)
             content.badge = NSNumber(value: items.count)
             content.sound = .none
             let identifier = "LocalNotification"
@@ -299,10 +322,11 @@ extension NetworkingPipeline: UNUserNotificationCenterDelegate {
             let request = UNNotificationRequest(identifier: identifier,
               content: content, trigger: trigger)
             UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
+            print("More new cheapies are available!")
         } else if items.count == 1 {
             let content = UNMutableNotificationContent()
-            content.title = "One new cheapie is available"
-            content.body = extractCategoriesFrom(items: items)
+            content.title = "One new goody is available at " + source
+            content.body = extractSubtitleFrom(items: items)
             content.badge = NSNumber(value: 1)
             content.sound = .none
             let identifier = "LocalNotification"
@@ -311,26 +335,26 @@ extension NetworkingPipeline: UNUserNotificationCenterDelegate {
             let request = UNNotificationRequest(identifier: identifier,
               content: content, trigger: trigger)
             UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
+            print("More new cheapies are available!")
         }
     }
     
-    func extractCategoriesFrom(items: [FeedEntry]) -> String {
-        let keyDict = items.reduce([String: Int]()) { (result: [String: Int], item: FeedEntry) -> [String: Int] in
-            var varResult = result
-            for cat in item.category {
-                varResult[cat] = 1
-            }
-            return varResult
-        }
-        let keys = Array(keyDict.keys)
-        let msg = keys.joined(separator: ", ")
-        if items.count>1 {
-            return "Categories: " + msg
+    func extractSubtitleFrom(items: [FeedEntry]) -> String {
+        if items.count == 1 {
+            return items.first!.title
         } else {
-            return "Category: " + msg
+            let keyDict = items.reduce([String: Int]()) { (result: [String: Int], item: FeedEntry) -> [String: Int] in
+                var varResult = result
+                for cat in item.category {
+                    varResult[cat] = 1
+                }
+                return varResult
+            }
+            let keys = Array(keyDict.keys)
+            let msg = keys.joined(separator: ", ")
+            return "Categories: " + msg
         }
     }
-    
 }
 
 extension Date: XMLElementDeserializable, XMLAttributeDeserializable {
