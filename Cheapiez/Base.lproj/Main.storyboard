@@ -17,7 +17,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="140" estimatedRowHeight="100" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="NKr-rV-d9L">
-                                <rect key="frame" x="0.0" y="44" width="800" height="556"/>
+                                <rect key="frame" x="0.0" y="44" width="800" height="512"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <color key="separatorColor" systemColor="separatorColor"/>
                                 <prototypes>
@@ -128,20 +128,46 @@
                                 </items>
                                 <color key="barTintColor" systemColor="systemGray5Color"/>
                             </toolbar>
+                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="arl-Ne-CsT">
+                                <rect key="frame" x="739" y="562" width="49" height="31"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="47" id="Cwq-Yp-Jgs"/>
+                                    <constraint firstAttribute="height" constant="31" id="INV-ON-ukQ"/>
+                                </constraints>
+                                <connections>
+                                    <action selector="notifyValueChanged:" destination="BYZ-38-t0r" eventType="valueChanged" id="jHh-oe-vyI"/>
+                                </connections>
+                            </switch>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Notification on new stuff" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tKu-St-ox5">
+                                <rect key="frame" x="20" y="569" width="711" height="17"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="17" id="SFC-H8-Pra"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <color key="textColor" systemColor="secondaryLabelColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <color key="backgroundColor" systemColor="systemGray5Color"/>
                         <constraints>
                             <constraint firstItem="J49-X1-fEs" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="1rv-Ic-VaR"/>
                             <constraint firstItem="J49-X1-fEs" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="4DP-Xn-Vd0"/>
+                            <constraint firstItem="arl-Ne-CsT" firstAttribute="centerY" secondItem="tKu-St-ox5" secondAttribute="centerY" id="5Qa-nN-elN"/>
+                            <constraint firstItem="tKu-St-ox5" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="OFc-49-OY0"/>
                             <constraint firstItem="J49-X1-fEs" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="TTj-Lb-yzT"/>
                             <constraint firstItem="NKr-rV-d9L" firstAttribute="top" secondItem="J49-X1-fEs" secondAttribute="bottom" id="XPc-Lw-s4N"/>
-                            <constraint firstItem="NKr-rV-d9L" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="s5r-NU-MCm"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="arl-Ne-CsT" secondAttribute="trailing" constant="14" id="aqV-4D-mTk"/>
+                            <constraint firstItem="arl-Ne-CsT" firstAttribute="leading" secondItem="tKu-St-ox5" secondAttribute="trailing" constant="8" symbolic="YES" id="lxw-BF-Zm8"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="arl-Ne-CsT" secondAttribute="bottom" constant="7" id="q4F-MN-3XW"/>
+                            <constraint firstItem="NKr-rV-d9L" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" constant="-44" id="s5r-NU-MCm"/>
                             <constraint firstItem="NKr-rV-d9L" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="sTD-9b-U5T"/>
                             <constraint firstItem="NKr-rV-d9L" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="wDi-zq-iLb"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="notifyMessage" destination="tKu-St-ox5" id="R9h-Wz-sEL"/>
+                        <outlet property="notifySwitch" destination="arl-Ne-CsT" id="tpC-2a-LT3"/>
                         <outlet property="sourceSelector" destination="B0w-ti-Nox" id="vSk-vJ-iU5"/>
                         <outlet property="tableView" destination="NKr-rV-d9L" id="99n-pr-h9x"/>
                     </connections>
@@ -152,6 +178,9 @@
         </scene>
     </scenes>
     <resources>
+        <systemColor name="secondaryLabelColor">
+            <color red="0.0" green="0.0" blue="0.0" alpha="0.49803921568627452" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
         <systemColor name="separatorColor">
             <color red="0.0" green="0.0" blue="0.0" alpha="0.098039215686274508" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>

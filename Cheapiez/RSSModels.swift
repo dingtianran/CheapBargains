@@ -20,6 +20,7 @@ struct RSSItem {
     let pubDate: Date?
     let imageURL: String?
     let category: [Category]?
+    let guid: String?
     
     private static let dateFormatter: DateFormatter = {
             let df = DateFormatter()
@@ -29,9 +30,11 @@ struct RSSItem {
 }
 
 struct FeedEntry {
+    let id: String
     let title: String
     let link: String
     let imageURL: String
     let subtitle: NSAttributedString
     let desc: NSAttributedString
+    let category: [String]
 }
