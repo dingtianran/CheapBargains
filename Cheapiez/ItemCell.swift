@@ -48,11 +48,11 @@ class ItemCell: UITableViewCell {
     @objc func hovering(_ recognizer: UIHoverGestureRecognizer) {
         switch recognizer.state {
           case .began, .changed:
-            backgroundColor = UIColor(white: 0.95, alpha: 1.0)
+            backgroundColor = .systemTeal
           case .ended:
-            backgroundColor = .white
+            backgroundColor = .systemBackground
           default:
-            backgroundColor = .white
+            backgroundColor = .systemBackground
         }
     }
 }

@@ -36,6 +36,15 @@ class ViewController: UIViewController {
         reloadSourceFromRSS(forceRefresh: true)
     }
     
+    //For light/dark scheme transition
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        if self.traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) {
+            pipeline.darkMode = self.traitCollection.userInterfaceStyle == .dark
+            tableView.reloadData()
+        }
+    }
+    
     func reloadSourceFromRSS(forceRefresh: Bool) {
         if pipeline.reload(sourceIndex: sourceSelector.selectedSegmentIndex, force: forceRefresh) == true {
             self.tableView.reloadData()
