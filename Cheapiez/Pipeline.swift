@@ -314,7 +314,7 @@ class NetworkingPipeline: NSObject {
     <html>
     <head>
     <style>
-    p {
+    body {
       font-size: 16px;
       color: black;
     }
@@ -327,7 +327,7 @@ class NetworkingPipeline: NSObject {
     <html>
     <head>
     <style>
-    p {
+    body {
       font-size: 16px;
       color: #F8F8FF;
     }
