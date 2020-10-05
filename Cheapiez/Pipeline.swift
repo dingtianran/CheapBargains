@@ -15,6 +15,7 @@ class NetworkingPipeline: NSObject {
     
     var previousSourceIndex = 0
     var sourceFeed: String
+    var previousXMLString: String?
     var userIntentToSeeNotify: Bool
     var cheapiesUpdatedDate: Date?
     var chchlalUpdatedDate: Date?
@@ -27,6 +28,13 @@ class NetworkingPipeline: NSObject {
     var chchlahKeyBucket = [String]()
     var ozbRssItems: [FeedEntry]?
     var ozbKeyBucket = [String]()
+    
+    var darkMode: Bool = false
+    {//Whenever title color changed, re-render every titles
+        didSet {
+            reRenderItems()
+        }
+    }
     
     init(initialFeed: String) {
         self.sourceFeed = initialFeed
@@ -99,6 +107,7 @@ class NetworkingPipeline: NSObject {
             AF.request(sourceFeed).responseString { (response: AFDataResponse<String>) in
                 switch response.result {
                 case .success:
+                    self.previousXMLString = response.value
                     DispatchQueue.global().async {
                         if let newItems = self.processXML(response.value) {
                             if self.sourceFeed == "https://www.cheapies.nz/deals/feed" {
@@ -122,6 +131,18 @@ class NetworkingPipeline: NSObject {
             return false
         } else {
             return true
+        }
+    }
+    
+    func reRenderItems() {
+        if let newItems = self.processXML(previousXMLString) {
+            if self.sourceFeed == "https://www.cheapies.nz/deals/feed" {
+                self.cheapiesRssItems = newItems
+            } else if self.sourceFeed == "https://www.ozbargain.com.au/deals/feed" {
+                self.ozbRssItems = newItems
+            } else if self.sourceFeed == "https://www.cheapcheaplah.com/deals/feed" {
+                self.chchlahRssItems = newItems
+            }
         }
     }
     
@@ -211,7 +232,7 @@ class NetworkingPipeline: NSObject {
         //html description
         let input = rssModel.description ?? ""
         let html = formattingDescription(input)
-        let fullHtml = htmlHead + html + htmlTail
+        let fullHtml = (darkMode==true ? htmlHeadDark:htmlHeadLight) + html + htmlTail
         let data = Data(fullHtml.utf8)
         let desc = try? NSAttributedString(data: data, options: [.documentType: NSAttributedString.DocumentType.html], documentAttributes: nil)
         
@@ -289,12 +310,26 @@ class NetworkingPipeline: NSObject {
         }
     }
     
-    let htmlHead = """
+    let htmlHeadLight = """
     <html>
     <head>
     <style>
-    p {
+    body {
       font-size: 16px;
+      color: black;
+    }
+    </style>
+    </head>
+    <body>
+    """
+    
+    let htmlHeadDark = """
+    <html>
+    <head>
+    <style>
+    body {
+      font-size: 16px;
+      color: #F8F8FF;
     }
     </style>
     </head>
