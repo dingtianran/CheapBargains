@@ -1,5 +1,4 @@
 # 💸Cheapies/OzBargain/CheapcheapLah RSS reader for macOS💸
-=======
 
 ## Download the latest version at the sidebar 👉
 
@@ -24,6 +23,6 @@ $ open Cheapiez.xcodeproj
 * A basic UI which respect latest Apple guidelines.
 * Automatically refreshing every a few minutes, with notification.
 * No tracker, no profiling, no collecting data.
+* Light/Dark mode switch
 
-
-Made in New Zealand and built with love
+***Made in New Zealand and built with love***
