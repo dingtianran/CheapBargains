@@ -165,9 +165,13 @@ class NetworkingPipeline: NSObject {
             let desc = item["description"].element?.text
             let creator = item["dc:creator"].element?.text
             let pubDate: Date? = try? item["pubDate"].value()
+            let positiveVote = item["ozb:meta"].element?.attribute(by: "votes-pos")?.text
+            let negtiveVote = item["ozb:meta"].element?.attribute(by: "votes-neg")?.text
+            let comments = item["ozb:meta"].element?.attribute(by: "comment-count")?.text
+            let titleTag = item["ozb:title-msg"].element?.attribute(by: "type")?.text ?? "active"
             let thumbnail = item["media:thumbnail"].element?.attribute(by: "url")?.text
             let guid = item["guid"].element?.text
-            let entry = RSSItem(title: title, link: link, description: desc, creator: creator, pubDate: pubDate, imageURL: thumbnail, category: categories.count>0 ? categories:nil, guid: guid)
+            let entry = RSSItem(title: title, link: link, description: desc, creator: creator, pubDate: pubDate, positiveVote: positiveVote, negtiveVote: negtiveVote, comments: comments, titleTag: titleTag, imageURL: thumbnail, category: categories.count>0 ? categories:nil, guid: guid)
             let vm = assembleVModelFrom(rssModel: entry)
             items.append(vm)
             
@@ -207,6 +211,38 @@ class NetworkingPipeline: NSObject {
     }
     
     func assembleVModelFrom(rssModel: RSSItem) -> FeedEntry {
+        //title line
+        let titleline = NSMutableAttributedString()
+        if let tag = rssModel.titleTag {
+            var tagColor: UIColor
+            if tag == "targeted" {
+                tagColor = UIColor.systemBlue
+            } else if tag == "active" {
+                tagColor = UIColor.systemTeal
+            } else if tag == "expired" {
+                tagColor = UIColor.red
+            } else if tag == "longrunning" {
+                tagColor = UIColor.systemBlue
+            } else if tag == "upcoming" {
+                tagColor = UIColor.systemGreen
+            } else {
+                tagColor = UIColor.systemBlue
+            }
+            let attributesTag: [NSAttributedString.Key: Any] = [
+                .font: UIFont.boldSystemFont(ofSize: 14),
+                .foregroundColor: UIColor.white,
+                .backgroundColor: tagColor,
+            ]
+            let tagAttr = NSAttributedString(string: (" "+tag+" ").uppercased(), attributes: attributesTag)
+            titleline.append(tagAttr)
+        }
+        let attributesTitle: [NSAttributedString.Key: Any] = [
+            .font: UIFont.boldSystemFont(ofSize: 14),
+            .foregroundColor: (darkMode==true ? UIColor.white: UIColor.black),
+        ]
+        let titleAttr = NSAttributedString(string: " "+(rssModel.title ?? ""), attributes: attributesTitle)
+        titleline.append(titleAttr)
+        
         let blank = NSAttributedString(string: "")
         //subtitle line
         let attr = NSMutableAttributedString()
@@ -228,6 +264,17 @@ class NetworkingPipeline: NSObject {
             let on = NSAttributedString(string: dateStr, attributes: attributesDate)
             attr.append(on)
         }
+        //comments
+        if let comments = rssModel.comments {
+            if comments != "0" {
+                let attributesComments: [NSAttributedString.Key: Any] = [
+                    .font: UIFont.systemFont(ofSize: 14),
+                    .foregroundColor: UIColor(white: 0.5, alpha: 1.0),
+                ]
+                let cms = NSAttributedString(string: ", Comments: "+comments, attributes: attributesComments)
+                attr.append(cms)
+            }
+        }
         
         //html description
         let input = rssModel.description ?? ""
@@ -244,11 +291,29 @@ class NetworkingPipeline: NSObject {
             }
         }
         
+        //votings: up and down
+        let voline = NSMutableAttributedString()
+        if let up = rssModel.positiveVote, let down = rssModel.negtiveVote {
+            let attributesUp: [NSAttributedString.Key: Any] = [
+                .font: UIFont.systemFont(ofSize: 18),
+                .foregroundColor: UIColor.systemGreen,
+            ]
+            let attributesDown: [NSAttributedString.Key: Any] = [
+                .font: UIFont.systemFont(ofSize: 18),
+                .foregroundColor: UIColor.systemRed,
+            ]
+            let upStr = NSAttributedString(string: "+"+up, attributes: attributesUp)
+            voline.append(upStr)
+            let downStr = NSAttributedString(string: "  -"+down, attributes: attributesDown)
+            voline.append(downStr)
+        }
+        
         let vm = FeedEntry(id: rssModel.guid ?? "",
-                           title: rssModel.title ?? "",
+                           title: titleline,
                            link: rssModel.link ?? "",
                            imageURL: rssModel.imageURL ?? "",
                            subtitle: attr,
+                           votings: voline,
                            desc: desc ?? blank,
                            category: cats)
         return vm
@@ -376,7 +441,7 @@ extension NetworkingPipeline: UNUserNotificationCenterDelegate {
     
     func extractSubtitleFrom(items: [FeedEntry]) -> String {
         if items.count == 1 {
-            return items.first!.title
+            return items.first!.title.string
         } else {
             let keyDict = items.reduce([String: Int]()) { (result: [String: Int], item: FeedEntry) -> [String: Int] in
                 var varResult = result

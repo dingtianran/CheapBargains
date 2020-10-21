@@ -14,6 +14,7 @@ class ItemCell: UITableViewCell {
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var dateLabel: UILabel!
     @IBOutlet weak var thumbnail: UIImageView!
+    @IBOutlet weak var votingsLabel: UILabel!
     @IBOutlet weak var descView: UITextView!
     
     required init?(coder: NSCoder) {
@@ -35,11 +36,13 @@ class ItemCell: UITableViewCell {
     
     func updateWithItem(_ item: FeedEntry) {
         //entry title
-        titleLabel.text = item.title
+        titleLabel.attributedText = item.title
         //entry date and author
         dateLabel.attributedText = item.subtitle
         //entry description
         descView.attributedText = item.desc
+        //votings
+        votingsLabel.attributedText = item.votings
         //thumbnail image
         guard let url = URL(string: item.imageURL) else { return }
         thumbnail.af.setImage(withURL: url)
