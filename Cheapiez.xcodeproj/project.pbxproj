@@ -388,7 +388,7 @@
 			repositoryURL = "https://github.com/Alamofire/Alamofire.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 5.2.2;
+				minimumVersion = 5.3.0;
 			};
 		};
 		6F4BFE00251C4251009A5AA3 /* XCRemoteSwiftPackageReference "SWXMLHash" */ = {

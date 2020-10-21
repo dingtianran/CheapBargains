@@ -18,6 +18,10 @@ struct RSSItem {
     let description: String?
     let creator: String?
     let pubDate: Date?
+    let positiveVote: String?
+    let negtiveVote: String?
+    let comments: String?
+    let titleTag: String?
     let imageURL: String?
     let category: [Category]?
     let guid: String?
@@ -31,10 +35,11 @@ struct RSSItem {
 
 struct FeedEntry {
     let id: String
-    let title: String
+    let title: NSAttributedString
     let link: String
     let imageURL: String
     let subtitle: NSAttributedString
+    let votings: NSAttributedString
     let desc: NSAttributedString
     let category: [String]
 }
