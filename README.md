@@ -18,6 +18,8 @@ It's using Swift Package Manager so you don't need to deal with pods. Just open 
 $ open Cheapiez.xcodeproj
 ```
 
+Note: App icon was rendered by Blender, you'll find the `money.blend` and texture in Resources/ folder😎
+
 ## Features
 * View "latest" posts from [ChoiceCheapies🇳🇿](https://www.cheapies.nz)/[OzBargain🇦🇺](https://www.ozbargain.com.au/)/[CheapcheapLah🇸🇬](https://www.cheapcheaplah.com/).
 * A basic UI which respect latest Apple guidelines.
