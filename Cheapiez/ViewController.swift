@@ -10,16 +10,22 @@ import Alamofire
 import SWXMLHash
 
 class ViewController: UIViewController {
-    
+    @IBOutlet weak var topNotchGap: NSLayoutConstraint!
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var notifySwitch: UISwitch!
     @IBOutlet weak var notifyMessage: UILabel!
     @IBOutlet weak var sourceSelector: UISegmentedControl!
+    @IBOutlet weak var settingsButton: UIButton!
     
     var pipeline: NetworkingPipeline!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        #if !targetEnvironment(macCatalyst)
+        topNotchGap.constant = 20.0
+        #endif
+        
         sourceSelector.apportionsSegmentWidthsByContent = true
         
         UNUserNotificationCenter.current().delegate = self
@@ -66,6 +72,13 @@ class ViewController: UIViewController {
                 self.notifySwitch.isOn = verdict
             }
         }
+    }
+    
+    @IBAction func settingsButtonPressed(_ sender: Any) {
+        let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
+        let vc = storyboard.instantiateViewController(identifier: "SettingViewController")
+        let navi = UINavigationController(rootViewController: vc)
+        self.present(navi, animated: true, completion: nil)
     }
 }
 
