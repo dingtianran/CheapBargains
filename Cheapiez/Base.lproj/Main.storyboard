@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
     <device id="ipad10_2" orientation="portrait" layout="fullscreen" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17502"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -152,8 +152,8 @@
                                     <action selector="notifyValueChanged:" destination="BYZ-38-t0r" eventType="valueChanged" id="jHh-oe-vyI"/>
                                 </connections>
                             </switch>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Notification on new stuff" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tKu-St-ox5">
-                                <rect key="frame" x="582" y="1049" width="159" height="17"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Notification on new deal" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tKu-St-ox5">
+                                <rect key="frame" x="585" y="1049" width="156" height="17"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="17" id="SFC-H8-Pra"/>
                                 </constraints>
@@ -162,13 +162,13 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5Ej-hz-3pq">
-                                <rect key="frame" x="20" y="1048" width="75" height="20"/>
+                                <rect key="frame" x="20" y="1048" width="78" height="20"/>
                                 <constraints>
                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="75" id="MjG-V8-WIC"/>
                                     <constraint firstAttribute="height" constant="20" id="fNb-5n-8Uu"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <state key="normal" title="Settings" image="gearshape" catalog="system">
+                                <state key="normal" title="Preferences">
                                     <color key="titleColor" systemColor="systemBlueColor"/>
                                 </state>
                                 <connections>
@@ -191,6 +191,7 @@
                             <constraint firstItem="NKr-rV-d9L" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" constant="-44" id="s5r-NU-MCm"/>
                             <constraint firstItem="NKr-rV-d9L" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="sTD-9b-U5T"/>
                             <constraint firstItem="NKr-rV-d9L" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="wDi-zq-iLb"/>
+                            <constraint firstItem="tKu-St-ox5" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="5Ej-hz-3pq" secondAttribute="trailing" constant="20" id="yQT-2U-F4L"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="5Ej-hz-3pq" secondAttribute="bottom" constant="12" id="zPP-BV-k22"/>
                         </constraints>
                     </view>
@@ -214,22 +215,83 @@
                     <view key="view" contentMode="scaleToFill" id="6sl-s7-j53">
                         <rect key="frame" x="0.0" y="0.0" width="810" height="1080"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="06c-i8-0hs">
+                                <rect key="frame" x="496" y="15" width="49" height="31"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="47" id="9h8-SG-NGS"/>
+                                    <constraint firstAttribute="height" constant="31" id="NUh-sq-aF2"/>
+                                </constraints>
+                                <connections>
+                                    <action selector="notificationSwitchChanged:" destination="IaC-Uc-CPo" eventType="valueChanged" id="Kxr-Ty-Kzq"/>
+                                </connections>
+                            </switch>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Enable Notification" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Fhg-kJ-29u">
+                                <rect key="frame" x="332" y="20" width="146" height="21"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="146" id="adI-lY-ZC3"/>
+                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="21" id="iQc-rH-HI3"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Refresh on every:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9nZ-sC-QAe">
+                                <rect key="frame" x="338.5" y="101" width="133" height="21"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="133" id="MtM-F7-EBC"/>
+                                    <constraint firstAttribute="height" constant="21" id="tYv-49-kUF"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="h8z-y2-MDy">
+                                <rect key="frame" x="267.5" y="142" width="275" height="32"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="31" id="cyU-7S-YHV"/>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="275" id="za4-mI-tc1"/>
+                                </constraints>
+                                <segments>
+                                    <segment title="3 mins"/>
+                                    <segment title="10 mins"/>
+                                    <segment title="30 mins"/>
+                                    <segment title="1 hour"/>
+                                </segments>
+                                <connections>
+                                    <action selector="refreshFrequencyChanged:" destination="IaC-Uc-CPo" eventType="valueChanged" id="p5W-pf-YoL"/>
+                                </connections>
+                            </segmentedControl>
+                        </subviews>
                         <viewLayoutGuide key="safeArea" id="kEX-Ii-8gP"/>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <color key="backgroundColor" systemColor="tertiarySystemGroupedBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="h8z-y2-MDy" firstAttribute="top" secondItem="9nZ-sC-QAe" secondAttribute="bottom" constant="20" id="1hh-kf-SYQ"/>
+                            <constraint firstItem="Fhg-kJ-29u" firstAttribute="top" secondItem="kEX-Ii-8gP" secondAttribute="top" constant="20" id="2qT-Ph-AHx"/>
+                            <constraint firstItem="h8z-y2-MDy" firstAttribute="centerX" secondItem="6sl-s7-j53" secondAttribute="centerX" id="3gP-Gq-PnW"/>
+                            <constraint firstItem="Fhg-kJ-29u" firstAttribute="centerX" secondItem="6sl-s7-j53" secondAttribute="centerX" id="HHq-XM-Lau"/>
+                            <constraint firstItem="9nZ-sC-QAe" firstAttribute="top" secondItem="Fhg-kJ-29u" secondAttribute="bottom" constant="60" id="Khh-mD-DO2"/>
+                            <constraint firstItem="06c-i8-0hs" firstAttribute="centerY" secondItem="Fhg-kJ-29u" secondAttribute="centerY" id="Kjv-Wy-r9g"/>
+                            <constraint firstItem="9nZ-sC-QAe" firstAttribute="centerX" secondItem="6sl-s7-j53" secondAttribute="centerX" id="UKL-vY-OKS"/>
+                            <constraint firstItem="06c-i8-0hs" firstAttribute="leading" secondItem="Fhg-kJ-29u" secondAttribute="trailing" constant="18" id="ger-Ko-R2H"/>
+                        </constraints>
                     </view>
+                    <connections>
+                        <outlet property="frequencyControl" destination="h8z-y2-MDy" id="gDF-tH-NdT"/>
+                        <outlet property="notificationSwitch" destination="06c-i8-0hs" id="242-1q-mXA"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="KFd-I3-RNP" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="794" y="79"/>
+            <point key="canvasLocation" x="793.33333333333326" y="78.888888888888886"/>
         </scene>
     </scenes>
     <resources>
-        <image name="gearshape" catalog="system" width="128" height="121"/>
         <systemColor name="separatorColor">
-            <color red="0.0" green="0.0" blue="0.0" alpha="0.098039215686274508" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.23529411764705882" green="0.23529411764705882" blue="0.2627450980392157" alpha="0.28999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="systemBackgroundColor">
-            <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
         <systemColor name="systemBlueColor">
             <color red="0.0" green="0.47843137254901963" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -239,6 +301,9 @@
         </systemColor>
         <systemColor name="systemGrayColor">
             <color red="0.55686274509803924" green="0.55686274509803924" blue="0.57647058823529407" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+        <systemColor name="tertiarySystemGroupedBackgroundColor">
+            <color red="0.94901960784313721" green="0.94901960784313721" blue="0.96862745098039216" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>

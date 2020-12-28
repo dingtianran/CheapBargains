@@ -13,10 +13,12 @@ import UIKit
 
 class NetworkingPipeline: NSObject {
     
+    //feed: cheapies by default
+    static let shared = NetworkingPipeline(initialFeed: "https://www.cheapies.nz/deals/feed")
+    
     var previousSourceIndex = 0
     var sourceFeed: String
     var previousXMLString: String?
-    var userIntentToSeeNotify: Bool
     var cheapiesUpdatedDate: Date?
     var chchlalUpdatedDate: Date?
     var ozbUpdatedDate: Date?
@@ -29,6 +31,8 @@ class NetworkingPipeline: NSObject {
     var ozbRssItems: [FeedEntry]?
     var ozbKeyBucket = [String]()
     
+    @Published private(set) var refreshFrequency: Double = 0.0
+    
     var darkMode: Bool = false
     {//Whenever title color changed, re-render every titles
         didSet {
@@ -38,7 +42,6 @@ class NetworkingPipeline: NSObject {
     
     init(initialFeed: String) {
         self.sourceFeed = initialFeed
-        self.userIntentToSeeNotify = UserDefaults.standard.bool(forKey: "UserWant2SeeNotification")
         self.refreshTimer = Timer()
         //clear notify badge number when user enter foreground
         NotificationCenter.default.addObserver(forName: NSNotification.Name("NSApplicationDidBecomeActiveNotification"), object: nil, queue: OperationQueue.main) { (notification: Notification) in
@@ -55,12 +58,14 @@ class NetworkingPipeline: NSObject {
         }
     }
     
-    func resetTimerForNextRefresh() {
-        //setup refresh freq to every 180 sec
+    // By default it is 180 sec
+    func resetTimerForNextRefresh(_ freq: Double = 180.0) {
+        refreshFrequency = freq
+        //setup refresh freq to every given seconds
         if self.refreshTimer.isValid {
             self.refreshTimer.invalidate()
         }
-        self.refreshTimer = Timer.scheduledTimer(timeInterval: 180.0, target: self, selector: #selector(refreshTimerHandler(_:)), userInfo: nil, repeats: false)
+        self.refreshTimer = Timer.scheduledTimer(timeInterval: refreshFrequency, target: self, selector: #selector(refreshTimerHandler(_:)), userInfo: nil, repeats: false)
     }
     
     @objc func refreshTimerHandler(_ sender: Timer) {
@@ -85,19 +90,19 @@ class NetworkingPipeline: NSObject {
         var pendingRefrsh = true
         if sourceFeed == "https://www.cheapies.nz/deals/feed" {
             if let previous = cheapiesUpdatedDate {
-                if Date().timeIntervalSince(previous) < 180.0 {
+                if Date().timeIntervalSince(previous) < refreshFrequency {
                     pendingRefrsh = false
                 }
             }
         } else if sourceFeed == "https://www.ozbargain.com.au/deals/feed" {
             if let previous = ozbUpdatedDate {
-                if Date().timeIntervalSince(previous) < 180.0 {
+                if Date().timeIntervalSince(previous) < refreshFrequency {
                     pendingRefrsh = false
                 }
             }
         } else if sourceFeed == "https://www.cheapcheaplah.com/deals/feed" {
             if let previous = chchlalUpdatedDate {
-                if Date().timeIntervalSince(previous) < 180.0 {
+                if Date().timeIntervalSince(previous) < refreshFrequency {
                     pendingRefrsh = false
                 }
             }
@@ -344,34 +349,6 @@ class NetworkingPipeline: NSObject {
             return chchlahRssItems ?? [FeedEntry]()
         } else {
             return [FeedEntry]()
-        }
-    }
-    
-    func getCurrentNotifyStatus(completion: @escaping (Bool, String?) -> Void) {
-        UNUserNotificationCenter.current().getNotificationSettings { (settings: UNNotificationSettings) in
-            DispatchQueue.main.async {
-                if settings.badgeSetting != .enabled || self.userIntentToSeeNotify == false {
-                    completion(false, "Enable notification here ->")
-                } else {
-                    completion(true, nil)
-                }
-            }
-        }
-    }
-    
-    func userSetEnableNotify(on: Bool, completion: @escaping (Bool, String?) -> Void) {
-        userIntentToSeeNotify = on
-        UserDefaults.standard.setValue(on, forKey: "UserWant2SeeNotification")
-        if on == true {
-            UNUserNotificationCenter.current().requestAuthorization(options: [.badge,.alert]) { (granted, error) in
-                DispatchQueue.main.async {
-                    if error != nil {
-                        completion(false, "notification is disabled")
-                    } else {
-                        completion(true, nil)
-                    }
-                }
-            }
         }
     }
     
