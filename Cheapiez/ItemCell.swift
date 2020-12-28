@@ -52,10 +52,13 @@ class ItemCell: UITableViewCell {
         switch recognizer.state {
           case .began, .changed:
             backgroundColor = .systemTeal
+            votingsLabel.textColor = .white
           case .ended:
             backgroundColor = .systemBackground
+            votingsLabel.textColor = .systemTeal
           default:
             backgroundColor = .systemBackground
+            votingsLabel.textColor = .systemTeal
         }
     }
 }
