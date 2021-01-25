@@ -19,16 +19,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         
         #if targetEnvironment(macCatalyst)
-           if let titlebar = windowScene.titlebar {
-               titlebar.titleVisibility = .hidden
-               titlebar.toolbar = nil
-           }
-           #endif
+        if let titlebar = windowScene.titlebar {
+            titlebar.titleVisibility = .hidden
+            titlebar.toolbar = nil
+        }
         
         UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.forEach { windowScene in
             windowScene.sizeRestrictions?.minimumSize = CGSize(width: 480, height: 640)
-            windowScene.sizeRestrictions?.maximumSize = CGSize(width: 1080, height: 1080)
         }
+        #endif
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
