@@ -44,7 +44,7 @@ class NetworkingPipeline: NSObject {
         self.sourceFeed = initialFeed
         self.refreshTimer = Timer()
         //clear notify badge number when user enter foreground
-        NotificationCenter.default.addObserver(forName: NSNotification.Name("NSApplicationDidBecomeActiveNotification"), object: nil, queue: OperationQueue.main) { (notification: Notification) in
+        NotificationCenter.default.addObserver(forName: NSNotification.Name("NSApplicationDidBecomeActiveNotification"), object: nil, queue: .main) { (notification: Notification) in
             UIApplication.shared.applicationIconBadgeNumber = 0
         }
     }
@@ -53,7 +53,7 @@ class NetworkingPipeline: NSObject {
         get {
             let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = "dd/MM/yyyy - HH:mm"
-            dateFormatter.locale = NSLocale.current
+            dateFormatter.locale = .current
             return dateFormatter
         }
     }
@@ -66,6 +66,7 @@ class NetworkingPipeline: NSObject {
             self.refreshTimer.invalidate()
         }
         self.refreshTimer = Timer.scheduledTimer(timeInterval: refreshFrequency, target: self, selector: #selector(refreshTimerHandler(_:)), userInfo: nil, repeats: false)
+        self.refreshTimer.tolerance = 300.0
     }
     
     @objc func refreshTimerHandler(_ sender: Timer) {
@@ -140,7 +141,7 @@ class NetworkingPipeline: NSObject {
     }
     
     func reRenderItems() {
-        if let newItems = self.processXML(previousXMLString) {
+        if let newItems = processXML(previousXMLString) {
             if self.sourceFeed == "https://www.cheapies.nz/deals/feed" {
                 self.cheapiesRssItems = newItems
             } else if self.sourceFeed == "https://www.ozbargain.com.au/deals/feed" {
@@ -221,17 +222,17 @@ class NetworkingPipeline: NSObject {
         if let tag = rssModel.titleTag {
             var tagColor: UIColor
             if tag == "targeted" {
-                tagColor = UIColor.systemBlue
+                tagColor = .systemBlue
             } else if tag == "active" {
-                tagColor = UIColor.systemTeal
+                tagColor = .systemTeal
             } else if tag == "expired" {
-                tagColor = UIColor.red
+                tagColor = .red
             } else if tag == "longrunning" {
-                tagColor = UIColor.systemBlue
+                tagColor = .systemBlue
             } else if tag == "upcoming" {
-                tagColor = UIColor.systemGreen
+                tagColor = .systemGreen
             } else {
-                tagColor = UIColor.systemBlue
+                tagColor = .systemBlue
             }
             let attributesTag: [NSAttributedString.Key: Any] = [
                 .font: UIFont.boldSystemFont(ofSize: 14),
@@ -341,11 +342,11 @@ class NetworkingPipeline: NSObject {
     }
     
     func allFeedItems() -> [FeedEntry] {
-        if self.sourceFeed == "https://www.cheapies.nz/deals/feed" {
+        if sourceFeed == "https://www.cheapies.nz/deals/feed" {
             return cheapiesRssItems ?? [FeedEntry]()
-        } else if self.sourceFeed == "https://www.ozbargain.com.au/deals/feed" {
+        } else if sourceFeed == "https://www.ozbargain.com.au/deals/feed" {
             return ozbRssItems ?? [FeedEntry]()
-        } else if self.sourceFeed == "https://www.cheapcheaplah.com/deals/feed" {
+        } else if sourceFeed == "https://www.cheapcheaplah.com/deals/feed" {
             return chchlahRssItems ?? [FeedEntry]()
         } else {
             return [FeedEntry]()
