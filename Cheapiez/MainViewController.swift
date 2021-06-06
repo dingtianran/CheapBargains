@@ -74,12 +74,7 @@ class ViewController: UIViewController {
     }
     
     @IBAction func settingsButtonPressed(_ sender: Any) {
-        let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
-        let vc = storyboard.instantiateViewController(identifier: "SettingViewController") { coder -> SettingViewController? in
-            SettingViewController(notifyEnable: self.notifySwitch.isOn, coder: coder)
-        }
-        let navi = UINavigationController(rootViewController: vc)
-        self.present(navi, animated: true, completion: nil)
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "OPEN_PREFERENCES"), object: nil)
     }
 }
 
