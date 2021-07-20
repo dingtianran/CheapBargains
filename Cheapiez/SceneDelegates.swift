@@ -7,7 +7,7 @@
 
 import UIKit
 
-class SceneDelegate: UIResponder, UIWindowSceneDelegate {
+class SceneDelegate: UIResponder, UIWindowSceneDelegate, NSToolbarDelegate {
 
     var window: UIWindow?
 
@@ -24,8 +24,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         let stb = UIStoryboard(name: "Main", bundle: Bundle.main)
         let source = stb.instantiateViewController(withIdentifier: "SourceViewController")
+        let navi = UINavigationController(rootViewController: source)
         let main = stb.instantiateViewController(withIdentifier: "MainViewController")
-        svc.viewControllers = [source, main]
+        svc.viewControllers = [navi, main]
         
         if let titlebar = windowScene.titlebar {
             titlebar.titleVisibility = .hidden
@@ -38,6 +39,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         window?.rootViewController = svc
         window?.makeKeyAndVisible()
+        
+        setupNSToolbar()
+    }
+    
+    func setupNSToolbar()
+    {
+        let toolbar = NSToolbar()
+        toolbar.delegate = self
+        window?.windowScene?.titlebar?.toolbar = toolbar
+//        window?.windowScene?.titlebar?.titleVisibility = .hidden
     }
 }
 
