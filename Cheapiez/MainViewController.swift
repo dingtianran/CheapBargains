@@ -10,25 +10,13 @@ import Combine
 import Alamofire
 import SWXMLHash
 
-class ViewController: UIViewController {
-    @IBOutlet weak var topNotchGap: NSLayoutConstraint!
+class MainViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
-    @IBOutlet weak var notifySwitch: UISwitch!
-    @IBOutlet weak var notifyMessage: UILabel!
-    @IBOutlet weak var sourceSelector: UISegmentedControl!
-    @IBOutlet weak var settingsButton: UIButton!
-    
     private var cancellables: Set<AnyCancellable> = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        #if !targetEnvironment(macCatalyst)
-        topNotchGap.constant = 20.0
-        #endif
-        
-        sourceSelector.apportionsSegmentWidthsByContent = true
-        
+                
         UNUserNotificationCenter.current().delegate = self
         
         //setup updating chain
@@ -38,7 +26,7 @@ class ViewController: UIViewController {
         //setup notification status
         NotificationHub.shared.$enableNotify.sink { [weak self] enabled in
             DispatchQueue.main.async {
-                self?.notifySwitch.isOn = enabled ?? false
+//                self?.notifySwitch.isOn = enabled ?? false
             }
         }.store(in: &cancellables)
         
@@ -55,7 +43,7 @@ class ViewController: UIViewController {
     }
     
     func reloadSourceFromRSS(forceRefresh: Bool) {
-        if NetworkingPipeline.shared.reload(sourceIndex: sourceSelector.selectedSegmentIndex, force: forceRefresh) == true {
+        if NetworkingPipeline.shared.reload(sourceIndex: 0, force: forceRefresh) == true {
             self.tableView.reloadData()
             self.tableView.contentOffset = CGPoint(x: 0.0, y: 0.0)
         }
@@ -76,14 +64,14 @@ class ViewController: UIViewController {
     @IBAction func settingsButtonPressed(_ sender: Any) {
         let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
         let vc = storyboard.instantiateViewController(identifier: "SettingViewController") { coder -> SettingViewController? in
-            SettingViewController(notifyEnable: self.notifySwitch.isOn, coder: coder)
+            SettingViewController(notifyEnable: true, coder: coder)
         }
         let navi = UINavigationController(rootViewController: vc)
         self.present(navi, animated: true, completion: nil)
     }
 }
 
-extension ViewController: UITableViewDelegate, UITableViewDataSource {
+extension MainViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         140.0
@@ -106,7 +94,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     }
 }
 
-extension ViewController: UNUserNotificationCenterDelegate {
+extension MainViewController: UNUserNotificationCenterDelegate {
     
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
         self.tableView.contentOffset = CGPoint(x: 0.0, y: 0.0)
