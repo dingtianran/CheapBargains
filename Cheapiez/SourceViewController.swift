@@ -19,12 +19,17 @@ class SourceViewController: UIViewController {
         navigationItem.rightBarButtonItems = [settings, refresh]
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        tableView.selectRow(at: IndexPath(row: 0, section: 0), animated: true, scrollPosition: .none)
+    }
+    
     @objc func refreshButtonPressed(_ sender: Any) {
         
     }
     
     @objc func settingsButtonPressed(_ sender: Any) {
-        
+        NotificationCenter.default.post(name: NSNotification.Name("OPEN_PREFERENCES"), object: nil)
     }
 }
 

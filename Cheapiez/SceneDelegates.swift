@@ -16,22 +16,21 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate, NSToolbarDelegate {
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         guard let windowScene = (scene as? UIWindowScene) else { return }
-        
-        window = UIWindow(windowScene: windowScene)
-        
-        let svc = UISplitViewController()
-        svc.primaryBackgroundStyle = .sidebar
-        
-        let stb = UIStoryboard(name: "Main", bundle: Bundle.main)
-        let source = stb.instantiateViewController(withIdentifier: "SourceViewController")
-        let navi = UINavigationController(rootViewController: source)
-        let main = stb.instantiateViewController(withIdentifier: "MainViewController")
-        svc.viewControllers = [navi, main]
-        
         if let titlebar = windowScene.titlebar {
             titlebar.titleVisibility = .hidden
             titlebar.toolbar = nil
         }
+        window = UIWindow(windowScene: windowScene)
+        
+        let svc = UISplitViewController(style: .doubleColumn)
+        svc.primaryBackgroundStyle = .none
+        
+        let stb = UIStoryboard(name: "Main", bundle: Bundle.main)
+        let source = stb.instantiateViewController(withIdentifier: "SourceViewController")
+        let navi1 = UINavigationController(rootViewController: source)
+        let main = stb.instantiateViewController(withIdentifier: "MainViewController")
+        let navi2 = UINavigationController(rootViewController: main)
+        svc.viewControllers = [navi1, navi2]
         
         UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.forEach { windowScene in
             windowScene.sizeRestrictions?.minimumSize = CGSize(width: 480, height: 640)
@@ -45,9 +44,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate, NSToolbarDelegate {
     
     func setupNSToolbar()
     {
-        let toolbar = NSToolbar()
-        toolbar.delegate = self
-        window?.windowScene?.titlebar?.toolbar = toolbar
+//        let toolbar = NSToolbar()
+//        toolbar.delegate = self
+//        window?.windowScene?.titlebar?.toolbar = toolbar
 //        window?.windowScene?.titlebar?.titleVisibility = .hidden
     }
 }
