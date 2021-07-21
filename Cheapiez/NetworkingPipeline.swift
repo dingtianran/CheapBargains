@@ -14,14 +14,12 @@ import UIKit
 class NetworkingPipeline: NSObject {
     
     //feed: cheapies by default
-    static let shared = NetworkingPipeline(initialFeed: "https://www.cheapies.nz/deals/feed")
+    static let shared = NetworkingPipeline()
     
-    var previousSourceIndex = 0
-    var sourceFeed: String
-    var previousXMLString: String?
-    var cheapiesUpdatedDate: Date?
-    var chchlalUpdatedDate: Date?
-    var ozbUpdatedDate: Date?
+    var previousXMLString1: String?
+    var previousXMLString2: String?
+    var previousXMLString3: String?
+    var updatedDate: Date?
     var refreshTimer: Timer
     
     var cheapiesRssItems: [FeedEntry]?
@@ -32,6 +30,7 @@ class NetworkingPipeline: NSObject {
     var ozbKeyBucket = [String]()
     
     @Published private(set) var refreshFrequency: Double = 0.0
+    @Published private(set) var sourceIndex = 1
     
     var darkMode: Bool = false
     {//Whenever title color changed, re-render every titles
@@ -40,8 +39,7 @@ class NetworkingPipeline: NSObject {
         }
     }
     
-    init(initialFeed: String) {
-        self.sourceFeed = initialFeed
+    override init() {
         self.refreshTimer = Timer()
         //clear notify badge number when user enter foreground
         NotificationCenter.default.addObserver(forName: NSNotification.Name("NSApplicationDidBecomeActiveNotification"), object: nil, queue: .main) { (notification: Notification) in
@@ -71,67 +69,73 @@ class NetworkingPipeline: NSObject {
     
     @objc func refreshTimerHandler(_ sender: Timer) {
         print("Timer fired!")
-        _ = reload(sourceIndex: previousSourceIndex, force: true)
+        _ = reload(true)
+    }
+    
+    func markSourceIndex(_ source: Int) {
+        sourceIndex = source
     }
     
     //Return isReady
-    func reload(sourceIndex: Int, force: Bool) -> Bool {
-        switch sourceIndex {
-        case 1:
-            //ozbargain
-            sourceFeed = "https://www.ozbargain.com.au/deals/feed"
-        case 2:
-            //chchlah
-            sourceFeed = "https://www.cheapcheaplah.com/deals/feed"
-        default:
-            //cheapies
-            sourceFeed = "https://www.cheapies.nz/deals/feed"
-        }
-        previousSourceIndex = sourceIndex
+    func reload(_ force: Bool) -> Bool {
         var pendingRefrsh = true
-        if sourceFeed == "https://www.cheapies.nz/deals/feed" {
-            if let previous = cheapiesUpdatedDate {
-                if Date().timeIntervalSince(previous) < refreshFrequency {
-                    pendingRefrsh = false
-                }
-            }
-        } else if sourceFeed == "https://www.ozbargain.com.au/deals/feed" {
-            if let previous = ozbUpdatedDate {
-                if Date().timeIntervalSince(previous) < refreshFrequency {
-                    pendingRefrsh = false
-                }
-            }
-        } else if sourceFeed == "https://www.cheapcheaplah.com/deals/feed" {
-            if let previous = chchlalUpdatedDate {
-                if Date().timeIntervalSince(previous) < refreshFrequency {
-                    pendingRefrsh = false
-                }
+        if let previous = updatedDate {
+            if Date().timeIntervalSince(previous) < refreshFrequency {
+                pendingRefrsh = false
             }
         }
         
         if pendingRefrsh == true || force == true {
-            AF.request(sourceFeed).responseString { (response: AFDataResponse<String>) in
+            let group = DispatchGroup()
+            //cheapies
+            group.enter()
+            let sourceFeed1 = "https://www.cheapies.nz/deals/feed"
+            AF.request(sourceFeed1).responseString { (response: AFDataResponse<String>) in
                 switch response.result {
                 case .success:
-                    self.previousXMLString = response.value
-                    DispatchQueue.global().async {
-                        if let newItems = self.processXML(response.value) {
-                            if self.sourceFeed == "https://www.cheapies.nz/deals/feed" {
-                                self.cheapiesRssItems = newItems
-                                self.cheapiesUpdatedDate = Date()
-                            } else if self.sourceFeed == "https://www.ozbargain.com.au/deals/feed" {
-                                self.ozbRssItems = newItems
-                                self.ozbUpdatedDate = Date()
-                            } else if self.sourceFeed == "https://www.cheapcheaplah.com/deals/feed" {
-                                self.chchlahRssItems = newItems
-                                self.chchlalUpdatedDate = Date()
-                            }
-                        }
-                        NotificationCenter.default.post(name: Notification.Name("RSSFeedRefreshingReady"), object: nil)
+                    self.previousXMLString1 = response.value
+                    if let newItems = self.processXML(index: 1, xml: response.value) {
+                        self.cheapiesRssItems = newItems
                     }
                 case let .failure(error):
                     print(error)
                 }
+                group.leave()
+            }
+            //ozbargain
+            group.enter()
+            let sourceFeed2 = "https://www.ozbargain.com.au/deals/feed"
+            AF.request(sourceFeed2).responseString { (response: AFDataResponse<String>) in
+                switch response.result {
+                case .success:
+                    self.previousXMLString2 = response.value
+                    if let newItems = self.processXML(index: 2, xml: response.value) {
+                        self.ozbRssItems = newItems
+                    }
+                case let .failure(error):
+                    print(error)
+                }
+                group.leave()
+            }
+            //chchlah
+            group.enter()
+            let sourceFeed3 = "https://www.cheapcheaplah.com/deals/feed"
+            AF.request(sourceFeed3).responseString { (response: AFDataResponse<String>) in
+                switch response.result {
+                case .success:
+                    self.previousXMLString3 = response.value
+                    if let newItems = self.processXML(index: 3, xml: response.value) {
+                        self.chchlahRssItems = newItems
+                    }
+                case let .failure(error):
+                    print(error)
+                }
+                group.leave()
+            }
+            
+            group.notify(queue: DispatchQueue.global()) {
+                self.updatedDate = Date()
+                NotificationCenter.default.post(name: Notification.Name("RSSFeedRefreshingReady"), object: nil)
             }
             resetTimerForNextRefresh()
             return false
@@ -141,18 +145,18 @@ class NetworkingPipeline: NSObject {
     }
     
     func reRenderItems() {
-        if let newItems = processXML(previousXMLString) {
-            if self.sourceFeed == "https://www.cheapies.nz/deals/feed" {
-                self.cheapiesRssItems = newItems
-            } else if self.sourceFeed == "https://www.ozbargain.com.au/deals/feed" {
-                self.ozbRssItems = newItems
-            } else if self.sourceFeed == "https://www.cheapcheaplah.com/deals/feed" {
-                self.chchlahRssItems = newItems
-            }
+        if let newItems = processXML(index: 1, xml: previousXMLString1) {
+            cheapiesRssItems = newItems
+        }
+        if let newItems = processXML(index: 2, xml: previousXMLString2) {
+            ozbRssItems = newItems
+        }
+        if let newItems = processXML(index: 3, xml: previousXMLString3) {
+            chchlahRssItems = newItems
         }
     }
     
-    func processXML(_ xml: String?) -> [FeedEntry]? {
+    private func processXML(index: Int, xml: String?) -> [FeedEntry]? {
         guard let xmlString = xml else { return nil }
         let parser = SWXMLHash.parse(xmlString)
         var items = [FeedEntry]()
@@ -182,32 +186,33 @@ class NetworkingPipeline: NSObject {
             items.append(vm)
             
             if let id = guid {
-                if sourceFeed == "https://www.cheapies.nz/deals/feed" {
+                if index == 1 {
                     if !cheapiesKeyBucket.contains(id) {
                         newIncomingBucket.append(vm)
                     }
-                } else if sourceFeed == "https://www.ozbargain.com.au/deals/feed" {
+                } else if index == 2 {
                     if !ozbKeyBucket.contains(id) {
                         newIncomingBucket.append(vm)
                     }
-                } else if sourceFeed == "https://www.cheapcheaplah.com/deals/feed" {
+                } else if index == 3 {
                     if !chchlahKeyBucket.contains(id) {
                         newIncomingBucket.append(vm)
                     }
                 }
             }
         }
-        if sourceFeed == "https://www.cheapies.nz/deals/feed" {
+        
+        if index == 1 {
             if cheapiesKeyBucket.count > 0 {
                 handleNewIncoming(items: newIncomingBucket, for: "Cheapies")
             }
             cheapiesKeyBucket.append(contentsOf: newIncomingBucket.map({ $0.id }))
-        } else if sourceFeed == "https://www.ozbargain.com.au/deals/feed" {
+        } else if index == 2 {
             if ozbKeyBucket.count > 0 {
                 handleNewIncoming(items: newIncomingBucket, for: "OzBargain")
             }
             ozbKeyBucket.append(contentsOf: newIncomingBucket.map({ $0.id }))
-        } else if sourceFeed == "https://www.cheapcheaplah.com/deals/feed" {
+        } else if index == 3 {
             if chchlahKeyBucket.count > 0 {
                 handleNewIncoming(items: newIncomingBucket, for: "CheapcheapLah")
             }
@@ -341,12 +346,12 @@ class NetworkingPipeline: NSObject {
         return processed
     }
     
-    func allFeedItems() -> [FeedEntry] {
-        if sourceFeed == "https://www.cheapies.nz/deals/feed" {
+    func allFeedItemsFor(_ index: Int) -> [FeedEntry] {
+        if index == 1 {
             return cheapiesRssItems ?? [FeedEntry]()
-        } else if sourceFeed == "https://www.ozbargain.com.au/deals/feed" {
+        } else if index == 2 {
             return ozbRssItems ?? [FeedEntry]()
-        } else if sourceFeed == "https://www.cheapcheaplah.com/deals/feed" {
+        } else if index == 3 {
             return chchlahRssItems ?? [FeedEntry]()
         } else {
             return [FeedEntry]()

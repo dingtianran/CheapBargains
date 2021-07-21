@@ -20,14 +20,12 @@ class MainViewController: UIViewController {
         UNUserNotificationCenter.current().delegate = self
         
         //setup updating chain
-        NotificationCenter.default.addObserver(forName: NSNotification.Name("RSSFeedRefreshingReady"), object: nil, queue: OperationQueue.main) { (notification: Notification) in
-            self.tableView.reloadData()
+        NotificationCenter.default.addObserver(forName: NSNotification.Name("RSSFeedRefreshingReady"), object: nil, queue: OperationQueue.main) { [weak self] (notification: Notification) in
+            self?.tableView.reloadData()
         }
-        //setup notification status
-        NotificationHub.shared.$enableNotify.sink { [weak self] enabled in
-            DispatchQueue.main.async {
-//                self?.notifySwitch.isOn = enabled ?? false
-            }
+        
+        NetworkingPipeline.shared.$sourceIndex.sink { [weak self] newIndex in
+            self?.tableView.reloadData()
         }.store(in: &cancellables)
         
         reloadSourceFromRSS(forceRefresh: true)
@@ -43,7 +41,7 @@ class MainViewController: UIViewController {
     }
     
     func reloadSourceFromRSS(forceRefresh: Bool) {
-        if NetworkingPipeline.shared.reload(sourceIndex: 0, force: forceRefresh) == true {
+        if NetworkingPipeline.shared.reload(forceRefresh) == true {
             self.tableView.reloadData()
             self.tableView.contentOffset = CGPoint(x: 0.0, y: 0.0)
         }
@@ -78,18 +76,18 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        NetworkingPipeline.shared.allFeedItems().count
+        NetworkingPipeline.shared.allFeedItemsFor(NetworkingPipeline.shared.sourceIndex).count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: ItemCell.identifier) as! ItemCell
-        cell.updateWithItem(NetworkingPipeline.shared.allFeedItems()[indexPath.row])
+        cell.updateWithItem(NetworkingPipeline.shared.allFeedItemsFor(NetworkingPipeline.shared.sourceIndex)[indexPath.row])
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        let item = NetworkingPipeline.shared.allFeedItems()[indexPath.row]
+        let item = NetworkingPipeline.shared.allFeedItemsFor(NetworkingPipeline.shared.sourceIndex)[indexPath.row]
         UIApplication.shared.open(URL(string: item.link)!)
     }
 }

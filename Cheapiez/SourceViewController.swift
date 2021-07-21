@@ -15,10 +15,15 @@ class SourceViewController: UIViewController {
         
         navigationItem.title = "Feed / Sources"
         navigationController?.navigationBar.prefersLargeTitles = true
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(refreshButtonPressed(_:)))
+        let (refresh, settings) = (UIBarButtonItem(image: UIImage(systemName: "arrow.clockwise.circle"), style: .plain, target: self, action: #selector(refreshButtonPressed(_:))), UIBarButtonItem(image: UIImage(systemName: "gearshape"), style: .plain, target: self, action: #selector(settingsButtonPressed(_:))))
+        navigationItem.rightBarButtonItems = [settings, refresh]
     }
     
     @objc func refreshButtonPressed(_ sender: Any) {
+        
+    }
+    
+    @objc func settingsButtonPressed(_ sender: Any) {
         
     }
 }
@@ -34,6 +39,7 @@ extension SourceViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell(style: .value1, reuseIdentifier: "SourceCell")
+        cell.selectionStyle = .gray
         if indexPath.row == 0 {
             cell.textLabel?.text = "🇳🇿 ChoiceCheapies"
         } else if indexPath.row == 1 {
@@ -43,5 +49,9 @@ extension SourceViewController: UITableViewDelegate, UITableViewDataSource {
         }
         cell.detailTextLabel?.text = "12"
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        NetworkingPipeline.shared.markSourceIndex(indexPath.row + 1)
     }
 }
