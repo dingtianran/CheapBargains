@@ -8,7 +8,7 @@
 import Foundation
 import UserNotifications
 import Alamofire
-import SWXMLHash
+import AEXML
 import UIKit
 
 class NetworkingPipeline: NSObject {
@@ -16,11 +16,12 @@ class NetworkingPipeline: NSObject {
     //feed: cheapies by default
     static let shared = NetworkingPipeline()
     
-    var previousXMLString1: String?
-    var previousXMLString2: String?
-    var previousXMLString3: String?
+    var previousXMLStringData1: Data?
+    var previousXMLStringData2: Data?
+    var previousXMLStringData3: Data?
     var updatedDate: Date?
     var refreshTimer: Timer
+    let dateFormatter: DateFormatter
     
     var cheapiesRssItems: [FeedEntry]?
     var cheapiesKeyBucket = [String]()
@@ -41,6 +42,9 @@ class NetworkingPipeline: NSObject {
     
     override init() {
         self.refreshTimer = Timer()
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "EEE, dd MMM yyyy HH:mm:ss zzz"
+        self.dateFormatter = dateFormatter
         //clear notify badge number when user enter foreground
         NotificationCenter.default.addObserver(forName: NSNotification.Name("NSApplicationDidBecomeActiveNotification"), object: nil, queue: .main) { (notification: Notification) in
             UIApplication.shared.applicationIconBadgeNumber = 0
@@ -90,11 +94,11 @@ class NetworkingPipeline: NSObject {
             //cheapies
             group.enter()
             let sourceFeed1 = "https://www.cheapies.nz/deals/feed"
-            AF.request(sourceFeed1).responseString { (response: AFDataResponse<String>) in
+            AF.request(sourceFeed1).responseData { (response: AFDataResponse<Data>) in
                 switch response.result {
                 case .success:
-                    self.previousXMLString1 = response.value
-                    if let newItems = self.processXML(index: 1, xml: response.value) {
+                    self.previousXMLStringData1 = response.value
+                    if let newItems = self.processXMLData(index: 1, xml: response.value) {
                         self.cheapiesRssItems = newItems
                     }
                 case let .failure(error):
@@ -105,11 +109,11 @@ class NetworkingPipeline: NSObject {
             //ozbargain
             group.enter()
             let sourceFeed2 = "https://www.ozbargain.com.au/deals/feed"
-            AF.request(sourceFeed2).responseString { (response: AFDataResponse<String>) in
+            AF.request(sourceFeed2).responseData { (response: AFDataResponse<Data>) in
                 switch response.result {
                 case .success:
-                    self.previousXMLString2 = response.value
-                    if let newItems = self.processXML(index: 2, xml: response.value) {
+                    self.previousXMLStringData2 = response.value
+                    if let newItems = self.processXMLData(index: 2, xml: response.value) {
                         self.ozbRssItems = newItems
                     }
                 case let .failure(error):
@@ -120,11 +124,11 @@ class NetworkingPipeline: NSObject {
             //chchlah
             group.enter()
             let sourceFeed3 = "https://www.cheapcheaplah.com/deals/feed"
-            AF.request(sourceFeed3).responseString { (response: AFDataResponse<String>) in
+            AF.request(sourceFeed3).responseData { (response: AFDataResponse<Data>) in
                 switch response.result {
                 case .success:
-                    self.previousXMLString3 = response.value
-                    if let newItems = self.processXML(index: 3, xml: response.value) {
+                    self.previousXMLStringData3 = response.value
+                    if let newItems = self.processXMLData(index: 3, xml: response.value) {
                         self.chchlahRssItems = newItems
                     }
                 case let .failure(error):
@@ -145,61 +149,65 @@ class NetworkingPipeline: NSObject {
     }
     
     func reRenderItems() {
-        if let newItems = processXML(index: 1, xml: previousXMLString1) {
+        if let newItems = processXMLData(index: 1, xml: previousXMLStringData1) {
             cheapiesRssItems = newItems
         }
-        if let newItems = processXML(index: 2, xml: previousXMLString2) {
+        if let newItems = processXMLData(index: 2, xml: previousXMLStringData2) {
             ozbRssItems = newItems
         }
-        if let newItems = processXML(index: 3, xml: previousXMLString3) {
+        if let newItems = processXMLData(index: 3, xml: previousXMLStringData3) {
             chchlahRssItems = newItems
         }
     }
     
-    private func processXML(index: Int, xml: String?) -> [FeedEntry]? {
-        guard let xmlString = xml else { return nil }
-        let parser = SWXMLHash.parse(xmlString)
+    private func processXMLData(index: Int, xml: Data?) -> [FeedEntry]? {
+        guard let data = xml else { return nil }
         var items = [FeedEntry]()
         var newIncomingBucket = [FeedEntry]()
-        for item in parser["rss"]["channel"]["item"].all {
-            //assembly categorris
-            var categories = [Category]()
-            for cat in item["category"].all {
-                let domain = cat.element?.attribute(by: "domain")?.text
-                let text = cat.element?.text
-                categories.append(Category(domain: domain, text: text))
-            }
-            //assembly rss entry
-            let title = item["title"].element?.text
-            let link = item["link"].element?.text
-            let desc = item["description"].element?.text
-            let creator = item["dc:creator"].element?.text
-            let pubDate: Date? = try? item["pubDate"].value()
-            let positiveVote = item["ozb:meta"].element?.attribute(by: "votes-pos")?.text
-            let negtiveVote = item["ozb:meta"].element?.attribute(by: "votes-neg")?.text
-            let comments = item["ozb:meta"].element?.attribute(by: "comment-count")?.text
-            let titleTag = item["ozb:title-msg"].element?.attribute(by: "type")?.text ?? "active"
-            let thumbnail = item["media:thumbnail"].element?.attribute(by: "url")?.text
-            let guid = item["guid"].element?.text
-            let entry = RSSItem(title: title, link: link, description: desc, creator: creator, pubDate: pubDate, positiveVote: positiveVote, negtiveVote: negtiveVote, comments: comments, titleTag: titleTag, imageURL: thumbnail, category: categories.count>0 ? categories:nil, guid: guid)
-            let vm = assembleVModelFrom(rssModel: entry)
-            items.append(vm)
-            
-            if let id = guid {
-                if index == 1 {
-                    if !cheapiesKeyBucket.contains(id) {
-                        newIncomingBucket.append(vm)
+        do {
+            let xmlDoc = try AEXMLDocument(xml: data)
+            for child in xmlDoc.root["channel"]["item"].all! {
+                //assembly categories
+                var categories = [Category]()
+                for cate in child["category"].all! {
+                    if let domain = cate.attributes["domain"], let text = cate.value {
+                        categories.append(Category(domain: domain, text: text))
                     }
-                } else if index == 2 {
-                    if !ozbKeyBucket.contains(id) {
-                        newIncomingBucket.append(vm)
-                    }
-                } else if index == 3 {
-                    if !chchlahKeyBucket.contains(id) {
-                        newIncomingBucket.append(vm)
+                }
+                //assembly other RSS entries
+                let title = child["title"].value
+                let link = child["link"].value
+                let desc = child["description"].value
+                let creator = child["dc:creator"].value
+                let pubDate: Date? = dateFormatter.date(from: child["pubDate"].value ?? "")
+                let positiveVote = child["ozb:meta"].attributes["votes-pos"]
+                let negtiveVote = child["ozb:meta"].attributes["votes-neg"]
+                let comments = child["ozb:meta"].attributes["comment-count"]
+                let titleTag = child["ozb:title-msg"].attributes["type"] ?? "active"
+                let thumbnail = child["media:thumbnail"].attributes["url"]
+                let guid = child["guid"].value
+                let entry = RSSItem(title: title, link: link, description: desc, creator: creator, pubDate: pubDate, positiveVote: positiveVote, negtiveVote: negtiveVote, comments: comments, titleTag: titleTag, imageURL: thumbnail, category: categories.count>0 ? categories:nil, guid: guid)
+                let vm = assembleVModelFrom(rssModel: entry)
+                items.append(vm)
+                
+                if let id = guid {
+                    if index == 1 {
+                        if !cheapiesKeyBucket.contains(id) {
+                            newIncomingBucket.append(vm)
+                        }
+                    } else if index == 2 {
+                        if !ozbKeyBucket.contains(id) {
+                            newIncomingBucket.append(vm)
+                        }
+                    } else if index == 3 {
+                        if !chchlahKeyBucket.contains(id) {
+                            newIncomingBucket.append(vm)
+                        }
                     }
                 }
             }
+        } catch {
+            
         }
         
         if index == 1 {
@@ -437,39 +445,5 @@ extension NetworkingPipeline: UNUserNotificationCenterDelegate {
             let msg = keys.joined(separator: ", ")
             return "Categories: " + msg
         }
-    }
-}
-
-extension Date: XMLElementDeserializable, XMLAttributeDeserializable {
-    private static var rssFormatter: DateFormatter {
-        get {
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "EEE, dd MMM yyyy HH:mm:ss zzz"
-            return dateFormatter
-        }
-    }
-    
-    public static func deserialize(_ element: XMLElement) throws -> Date {
-        let date = stringToDate(element.text)
-
-        guard let validDate = date else {
-            throw XMLDeserializationError.typeConversionFailed(type: "Date", element: element)
-        }
-
-        return validDate
-    }
-
-    public static func deserialize(_ attribute: XMLAttribute) throws -> Date {
-        let date = stringToDate(attribute.text)
-
-        guard let validDate = date else {
-            throw XMLDeserializationError.attributeDeserializationFailed(type: "Date", attribute: attribute)
-        }
-
-        return validDate
-    }
-
-    private static func stringToDate(_ dateAsString: String) -> Date? {
-        return rssFormatter.date(from: dateAsString)
     }
 }

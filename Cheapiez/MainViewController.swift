@@ -7,8 +7,6 @@
 
 import UIKit
 import Combine
-import Alamofire
-import SWXMLHash
 
 class MainViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!

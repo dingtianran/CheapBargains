@@ -7,6 +7,7 @@
 
 import UIKit
 
+// MARK: - Main scene delegate
 class SceneDelegate: UIResponder, UIWindowSceneDelegate, NSToolbarDelegate {
 
     var window: UIWindow?
@@ -16,21 +17,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate, NSToolbarDelegate {
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         guard let windowScene = (scene as? UIWindowScene) else { return }
-        if let titlebar = windowScene.titlebar {
-            titlebar.titleVisibility = .hidden
-            titlebar.toolbar = nil
-        }
         window = UIWindow(windowScene: windowScene)
         
-        let svc = UISplitViewController(style: .doubleColumn)
-        svc.primaryBackgroundStyle = .none
+        let svc = UISplitViewController()
+        svc.primaryBackgroundStyle = .sidebar
         
         let stb = UIStoryboard(name: "Main", bundle: Bundle.main)
         let source = stb.instantiateViewController(withIdentifier: "SourceViewController")
-        let navi1 = UINavigationController(rootViewController: source)
         let main = stb.instantiateViewController(withIdentifier: "MainViewController")
-        let navi2 = UINavigationController(rootViewController: main)
-        svc.viewControllers = [navi1, navi2]
+        svc.viewControllers = [source, main]
         
         UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.forEach { windowScene in
             windowScene.sizeRestrictions?.minimumSize = CGSize(width: 480, height: 640)
@@ -42,15 +37,49 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate, NSToolbarDelegate {
         setupNSToolbar()
     }
     
-    func setupNSToolbar()
-    {
-//        let toolbar = NSToolbar()
-//        toolbar.delegate = self
-//        window?.windowScene?.titlebar?.toolbar = toolbar
-//        window?.windowScene?.titlebar?.titleVisibility = .hidden
+    func setupNSToolbar() {
+        let toolbar = NSToolbar()
+        toolbar.delegate = self
+        window?.windowScene?.titlebar?.toolbar = toolbar
+        window?.windowScene?.titlebar?.titleVisibility = .hidden
+    }
+    
+    //MARK: - NSToolbarDelegate
+    
+    func toolbarDefaultItemIdentifiers(_ toolbar: NSToolbar) -> [NSToolbarItem.Identifier] {
+        return [NSToolbarItem.Identifier("refreshButton"), NSToolbarItem.Identifier("settingsButton"), .flexibleSpace]
+    }
+    
+    func toolbarAllowedItemIdentifiers(_ toolbar: NSToolbar) -> [NSToolbarItem.Identifier] {
+        return [NSToolbarItem.Identifier("refreshButton"), NSToolbarItem.Identifier("settingsButton"), .flexibleSpace]
+    }
+    
+    func toolbar(_ toolbar: NSToolbar, itemForItemIdentifier itemIdentifier: NSToolbarItem.Identifier, willBeInsertedIntoToolbar flag: Bool) -> NSToolbarItem? {
+        
+        switch itemIdentifier {
+        case NSToolbarItem.Identifier("refreshButton"):
+            let barButtonItem = UIBarButtonItem(image: UIImage(systemName: "arrow.clockwise.circle"), style: .plain, target: self, action: #selector(refreshButtonPressed(_:)))
+            return NSToolbarItem(itemIdentifier: itemIdentifier, barButtonItem: barButtonItem)
+        case NSToolbarItem.Identifier("settingsButton"):
+            let barButtonItem = UIBarButtonItem(image: UIImage(systemName: "gearshape"), style: .plain, target: self, action: #selector(settingsButtonPressed(_:)))
+            return NSToolbarItem(itemIdentifier: itemIdentifier, barButtonItem: barButtonItem)
+        default:
+            break
+        }
+        
+        return NSToolbarItem(itemIdentifier: itemIdentifier)
+    }
+    
+    @objc func refreshButtonPressed(_ sender: Any) {
+        
+    }
+    
+    @objc func settingsButtonPressed(_ sender: Any) {
+        NotificationCenter.default.post(name: NSNotification.Name("OPEN_PREFERENCES"), object: nil)
     }
 }
 
+// MARK: - Pref scene delegate
 class PreferencesSceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     var window: UIWindow?
