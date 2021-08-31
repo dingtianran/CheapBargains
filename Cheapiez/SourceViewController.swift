@@ -34,12 +34,14 @@ extension SourceViewController: UITableViewDelegate, UITableViewDataSource {
         cell.selectionStyle = .gray
         if indexPath.row == 0 {
             cell.textLabel?.text = "🇳🇿 ChoiceCheapies"
+            cell.detailTextLabel?.text = NetworkingPipeline.shared.cheapiesNewEntries > 0 ? "\(NetworkingPipeline.shared.cheapiesNewEntries)" : nil
         } else if indexPath.row == 1 {
             cell.textLabel?.text = "🇦🇺 OzBargain"
+            cell.detailTextLabel?.text = NetworkingPipeline.shared.ozbNewEntries > 0 ? "\(NetworkingPipeline.shared.ozbNewEntries)" : nil
         } else if indexPath.row == 2 {
             cell.textLabel?.text = "🇸🇬 CheapcheapLah"
+            cell.detailTextLabel?.text = NetworkingPipeline.shared.chchlahNewEntries > 0 ? "\(NetworkingPipeline.shared.chchlahNewEntries)" : nil
         }
-        cell.detailTextLabel?.text = "12"
         return cell
     }
     

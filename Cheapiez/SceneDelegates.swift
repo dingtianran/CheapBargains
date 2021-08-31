@@ -21,6 +21,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate, NSToolbarDelegate {
         
         let svc = UISplitViewController()
         svc.primaryBackgroundStyle = .sidebar
+        svc.preferredPrimaryColumnWidth = 250
         
         let stb = UIStoryboard(name: "Main", bundle: Bundle.main)
         let source = stb.instantiateViewController(withIdentifier: "SourceViewController")
@@ -71,7 +72,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate, NSToolbarDelegate {
     }
     
     @objc func refreshButtonPressed(_ sender: Any) {
-        
+        // TODO: refresh
     }
     
     @objc func settingsButtonPressed(_ sender: Any) {

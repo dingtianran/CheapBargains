@@ -32,6 +32,9 @@ class NetworkingPipeline: NSObject {
     
     @Published private(set) var refreshFrequency: Double = 0.0
     @Published private(set) var sourceIndex = 1
+    @Published private(set) var cheapiesNewEntries: Int = 0
+    @Published private(set) var ozbNewEntries: Int = 0
+    @Published private(set) var chchlahNewEntries: Int = 0
     
     var darkMode: Bool = false
     {//Whenever title color changed, re-render every titles
@@ -78,6 +81,14 @@ class NetworkingPipeline: NSObject {
     
     func markSourceIndex(_ source: Int) {
         sourceIndex = source
+        // Mark unread entries zero after user switched feed
+        if source == 1 {
+            cheapiesNewEntries = 0
+        } else if source == 2 {
+            ozbNewEntries = 0
+        } else if source == 3 {
+            chchlahNewEntries = 0
+        }
     }
     
     //Return isReady
@@ -207,7 +218,7 @@ class NetworkingPipeline: NSObject {
                 }
             }
         } catch {
-            
+            return nil
         }
         
         if index == 1 {
@@ -290,8 +301,14 @@ class NetworkingPipeline: NSObject {
                     .font: UIFont.systemFont(ofSize: 14),
                     .foregroundColor: UIColor(white: 0.5, alpha: 1.0),
                 ]
-                let cms = NSAttributedString(string: ", Comments: "+comments, attributes: attributesComments)
+                let cms = NSAttributedString(string: ", Comments: ", attributes: attributesComments)
                 attr.append(cms)
+                let attributesCommentsCount: [NSAttributedString.Key: Any] = [
+                    .font: UIFont.boldSystemFont(ofSize: 14),
+                    .foregroundColor: UIColor.orange,
+                ]
+                let cmsCount = NSAttributedString(string: "\(comments)", attributes: attributesCommentsCount)
+                attr.append(cmsCount)
             }
         }
         
@@ -400,34 +417,44 @@ class NetworkingPipeline: NSObject {
 
 //Handling notification
 extension NetworkingPipeline: UNUserNotificationCenterDelegate {
-    func handleNewIncoming(items: [FeedEntry], for source:String) {
-        if items.count > 1 {
-            let content = UNMutableNotificationContent()
-            content.title = "More new goodies are available at " + source
-            content.body = extractSubtitleFrom(items: items)
-            content.badge = NSNumber(value: items.count)
-            content.sound = .none
-            let identifier = "LocalNotification"
-            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1,
-              repeats: false)
-            let request = UNNotificationRequest(identifier: identifier,
-              content: content, trigger: trigger)
-            UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
-            print("More new cheapies are available!")
-        } else if items.count == 1 {
-            let content = UNMutableNotificationContent()
-            content.title = "One new goody is available at " + source
-            content.body = extractSubtitleFrom(items: items)
-            content.badge = NSNumber(value: 1)
-            content.sound = .none
-            let identifier = "LocalNotification"
-            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1,
-              repeats: false)
-            let request = UNNotificationRequest(identifier: identifier,
-              content: content, trigger: trigger)
-            UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
-            print("More new cheapies are available!")
+    func handleNewIncoming(items: [FeedEntry], for source: String) {
+        if source == "Cheapies" {
+            // New entries from cheapies
+            cheapiesNewEntries = items.count
+        } else if source == "OzBargain" {
+            // New entries from ozb
+            ozbNewEntries = items.count
+        } else if source == "CheapcheapLah" {
+            // New entries from chchlah
+            chchlahNewEntries = items.count
         }
+//        if items.count > 1 {
+//            let content = UNMutableNotificationContent()
+//            content.title = "More new goodies are available at " + source
+//            content.body = extractSubtitleFrom(items: items)
+//            content.badge = NSNumber(value: items.count)
+//            content.sound = .none
+//            let identifier = "LocalNotification"
+//            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1,
+//              repeats: false)
+//            let request = UNNotificationRequest(identifier: identifier,
+//              content: content, trigger: trigger)
+//            UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
+//            print("More new cheapies are available!")
+//        } else if items.count == 1 {
+//            let content = UNMutableNotificationContent()
+//            content.title = "One new goody is available at " + source
+//            content.body = extractSubtitleFrom(items: items)
+//            content.badge = NSNumber(value: 1)
+//            content.sound = .none
+//            let identifier = "LocalNotification"
+//            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1,
+//              repeats: false)
+//            let request = UNNotificationRequest(identifier: identifier,
+//              content: content, trigger: trigger)
+//            UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
+//            print("More new cheapies are available!")
+//        }
     }
     
     func extractSubtitleFrom(items: [FeedEntry]) -> String {
