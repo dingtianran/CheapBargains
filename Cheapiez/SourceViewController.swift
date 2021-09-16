@@ -6,13 +6,27 @@
 //
 
 import UIKit
+import Combine
 
 class SourceViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
+    private var cancellables: Set<AnyCancellable> = []
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         tableView.selectRow(at: IndexPath(row: 0, section: 0), animated: true, scrollPosition: .none)
+        
+        NetworkingPipeline.shared.$cheapiesNewEntries.sink { [weak self] newCount in
+            self?.tableView.reloadData()
+        }.store(in: &cancellables)
+        
+        NetworkingPipeline.shared.$ozbNewEntries.sink { [weak self] newCount in
+            self?.tableView.reloadData()
+        }.store(in: &cancellables)
+        
+        NetworkingPipeline.shared.$chchlahNewEntries.sink { [weak self] newCount in
+            self?.tableView.reloadData()
+        }.store(in: &cancellables)
     }
 }
 
@@ -46,6 +60,6 @@ extension SourceViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        NetworkingPipeline.shared.markSourceIndex(indexPath.row + 1)
+        NetworkingPipeline.shared.markSourceReadForIndex(indexPath.row + 1)
     }
 }

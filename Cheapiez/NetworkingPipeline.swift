@@ -79,14 +79,14 @@ class NetworkingPipeline: NSObject {
         _ = reload(true)
     }
     
-    func markSourceIndex(_ source: Int) {
+    func markSourceReadForIndex(_ source: Int) {
         sourceIndex = source
         // Mark unread entries zero after user switched feed
-        if source == 1 {
+        if source == 1 && cheapiesNewEntries != 0 {
             cheapiesNewEntries = 0
-        } else if source == 2 {
+        } else if source == 2 && ozbNewEntries != 0{
             ozbNewEntries = 0
-        } else if source == 3 {
+        } else if source == 3 && chchlahNewEntries != 0 {
             chchlahNewEntries = 0
         }
     }
@@ -105,12 +105,12 @@ class NetworkingPipeline: NSObject {
             //cheapies
             group.enter()
             let sourceFeed1 = "https://www.cheapies.nz/deals/feed"
-            AF.request(sourceFeed1).responseData { (response: AFDataResponse<Data>) in
+            AF.request(sourceFeed1).responseData { [weak self] (response: AFDataResponse<Data>) in
                 switch response.result {
                 case .success:
-                    self.previousXMLStringData1 = response.value
-                    if let newItems = self.processXMLData(index: 1, xml: response.value) {
-                        self.cheapiesRssItems = newItems
+                    self?.previousXMLStringData1 = response.value
+                    if let newItems = self?.processXMLData(index: 1, xml: response.value) {
+                        self?.cheapiesRssItems = newItems
                     }
                 case let .failure(error):
                     print(error)
@@ -120,12 +120,12 @@ class NetworkingPipeline: NSObject {
             //ozbargain
             group.enter()
             let sourceFeed2 = "https://www.ozbargain.com.au/deals/feed"
-            AF.request(sourceFeed2).responseData { (response: AFDataResponse<Data>) in
+            AF.request(sourceFeed2).responseData { [weak self] (response: AFDataResponse<Data>) in
                 switch response.result {
                 case .success:
-                    self.previousXMLStringData2 = response.value
-                    if let newItems = self.processXMLData(index: 2, xml: response.value) {
-                        self.ozbRssItems = newItems
+                    self?.previousXMLStringData2 = response.value
+                    if let newItems = self?.processXMLData(index: 2, xml: response.value) {
+                        self?.ozbRssItems = newItems
                     }
                 case let .failure(error):
                     print(error)
@@ -135,12 +135,12 @@ class NetworkingPipeline: NSObject {
             //chchlah
             group.enter()
             let sourceFeed3 = "https://www.cheapcheaplah.com/deals/feed"
-            AF.request(sourceFeed3).responseData { (response: AFDataResponse<Data>) in
+            AF.request(sourceFeed3).responseData { [weak self] (response: AFDataResponse<Data>) in
                 switch response.result {
                 case .success:
-                    self.previousXMLStringData3 = response.value
-                    if let newItems = self.processXMLData(index: 3, xml: response.value) {
-                        self.chchlahRssItems = newItems
+                    self?.previousXMLStringData3 = response.value
+                    if let newItems = self?.processXMLData(index: 3, xml: response.value) {
+                        self?.chchlahRssItems = newItems
                     }
                 case let .failure(error):
                     print(error)
@@ -148,8 +148,9 @@ class NetworkingPipeline: NSObject {
                 group.leave()
             }
             
-            group.notify(queue: DispatchQueue.global()) {
-                self.updatedDate = Date()
+            // All three feeds are updated & ready to display
+            group.notify(queue: DispatchQueue.global()) { [weak self] in
+                self?.updatedDate = Date()
                 NotificationCenter.default.post(name: Notification.Name("RSSFeedRefreshingReady"), object: nil)
             }
             resetTimerForNextRefresh()
@@ -428,49 +429,39 @@ extension NetworkingPipeline: UNUserNotificationCenterDelegate {
             // New entries from chchlah
             chchlahNewEntries = items.count
         }
-//        if items.count > 1 {
-//            let content = UNMutableNotificationContent()
-//            content.title = "More new goodies are available at " + source
-//            content.body = extractSubtitleFrom(items: items)
-//            content.badge = NSNumber(value: items.count)
-//            content.sound = .none
-//            let identifier = "LocalNotification"
-//            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1,
-//              repeats: false)
-//            let request = UNNotificationRequest(identifier: identifier,
-//              content: content, trigger: trigger)
-//            UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
-//            print("More new cheapies are available!")
-//        } else if items.count == 1 {
-//            let content = UNMutableNotificationContent()
-//            content.title = "One new goody is available at " + source
-//            content.body = extractSubtitleFrom(items: items)
-//            content.badge = NSNumber(value: 1)
-//            content.sound = .none
-//            let identifier = "LocalNotification"
-//            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1,
-//              repeats: false)
-//            let request = UNNotificationRequest(identifier: identifier,
-//              content: content, trigger: trigger)
-//            UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
-//            print("More new cheapies are available!")
-//        }
-    }
-    
-    func extractSubtitleFrom(items: [FeedEntry]) -> String {
-        if items.count == 1 {
-            return items.first!.title.string
-        } else {
-            let keyDict = items.reduce([String: Int]()) { (result: [String: Int], item: FeedEntry) -> [String: Int] in
-                var varResult = result
-                for cat in item.category {
-                    varResult[cat] = 1
-                }
-                return varResult
-            }
-            let keys = Array(keyDict.keys)
-            let msg = keys.joined(separator: ", ")
-            return "Categories: " + msg
+        
+        // Figure out what notification fit to send
+        let content = UNMutableNotificationContent()
+        let identifier = "FeedUpdated"
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+        if cheapiesNewEntries > 0 && ozbNewEntries == 0 && chchlahNewEntries == 0 {
+            content.title = "New goodies arrived at \"Cheapies\""
+            let request = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
+            UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
+        } else if cheapiesNewEntries == 0 && ozbNewEntries > 0 && chchlahNewEntries == 0 {
+            content.title = "New goodies arrived at \"OzBargain\""
+            let request = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
+            UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
+        } else if cheapiesNewEntries == 0 && ozbNewEntries == 0 && chchlahNewEntries > 0 {
+            content.title = "New goodies arrived at \"CheapcheapLah\""
+            let request = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
+            UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
+        } else if cheapiesNewEntries > 0 && ozbNewEntries > 0 && chchlahNewEntries == 0 {
+            content.title = "New goodies arrived at \"Cheapies\" and \"OzBargain\""
+            let request = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
+            UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
+        } else if cheapiesNewEntries > 0 && ozbNewEntries == 0 && chchlahNewEntries > 0 {
+            content.title = "New goodies arrived at \"Cheapies\" and \"CheapcheapLah\""
+            let request = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
+            UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
+        } else if cheapiesNewEntries == 0 && ozbNewEntries > 0 && chchlahNewEntries > 0 {
+            content.title = "New goodies arrived at \"OzBargain\" and \"CheapcheapLah\""
+            let request = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
+            UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
+        } else if cheapiesNewEntries > 0 && ozbNewEntries > 0 && chchlahNewEntries > 0 {
+            content.title = "New goodies arrived at \"OzBargain\" and \"Cheapies\" and \"CheapcheapLah\""
+            let request = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
+            UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
         }
     }
 }
