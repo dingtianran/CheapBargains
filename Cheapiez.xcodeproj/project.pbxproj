@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6F33977F26F5349400899C3D /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 6F33977E26F5349400899C3D /* Credits.rtf */; };
 		6F4181A626DCC3060053D1B6 /* AEXML in Frameworks */ = {isa = PBXBuildFile; productRef = 6F4181A526DCC3060053D1B6 /* AEXML */; };
 		6F4BFDC2251AC05E009A5AA3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4BFDC1251AC05E009A5AA3 /* AppDelegate.swift */; };
 		6F4BFDC4251AC05E009A5AA3 /* SceneDelegates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4BFDC3251AC05E009A5AA3 /* SceneDelegates.swift */; };
@@ -26,6 +27,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		6F33977E26F5349400899C3D /* Credits.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; path = Credits.rtf; sourceTree = "<group>"; };
 		6F4BFDBE251AC05E009A5AA3 /* Cheapiez.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Cheapiez.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6F4BFDC1251AC05E009A5AA3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6F4BFDC3251AC05E009A5AA3 /* SceneDelegates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegates.swift; sourceTree = "<group>"; };
@@ -102,6 +104,7 @@
 				6F4BFE05251C53CF009A5AA3 /* RSSModels.swift */,
 				6FB320E326A6576D00636604 /* AllExtensions.swift */,
 				6F4BFDC7251AC05E009A5AA3 /* Main.storyboard */,
+				6F33977E26F5349400899C3D /* Credits.rtf */,
 				6F4BFDCA251AC060009A5AA3 /* Assets.xcassets */,
 				6F4BFDCF251AC060009A5AA3 /* Info.plist */,
 			);
@@ -218,6 +221,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6F4BFDCB251AC060009A5AA3 /* Assets.xcassets in Resources */,
+				6F33977F26F5349400899C3D /* Credits.rtf in Resources */,
 				6F4BFDC9251AC05E009A5AA3 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -394,7 +398,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Cheapiez/Cheapiez.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 30;
+				CURRENT_PROJECT_VERSION = 40;
 				DEVELOPMENT_TEAM = 9SC758JJ9F;
 				INFOPLIST_FILE = Cheapiez/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
@@ -404,7 +408,7 @@
 					"@executable_path/Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MARKETING_VERSION = 1.2;
+				MARKETING_VERSION = 1.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.iDing.cheapieshub;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTS_MACCATALYST = YES;
@@ -420,7 +424,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Cheapiez/Cheapiez.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 30;
+				CURRENT_PROJECT_VERSION = 40;
 				DEVELOPMENT_TEAM = 9SC758JJ9F;
 				INFOPLIST_FILE = Cheapiez/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
@@ -430,7 +434,7 @@
 					"@executable_path/Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MARKETING_VERSION = 1.2;
+				MARKETING_VERSION = 1.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.iDing.cheapieshub;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTS_MACCATALYST = YES;
