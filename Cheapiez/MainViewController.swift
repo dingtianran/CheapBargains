@@ -29,18 +29,8 @@ class MainViewController: UIViewController {
         reloadSourceFromRSS(forceRefresh: true)
     }
     
-    //For light/dark scheme transition
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
-        if self.traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) {
-            NetworkingPipeline.shared.darkMode = self.traitCollection.userInterfaceStyle == .dark
-            tableView.reloadData()
-        }
-    }
-    
     func reloadSourceFromRSS(forceRefresh: Bool) {
         if NetworkingPipeline.shared.reload(forceRefresh) == true {
-            self.tableView.reloadData()
             self.tableView.contentOffset = CGPoint(x: 0.0, y: 0.0)
         }
     }

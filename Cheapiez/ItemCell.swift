@@ -35,6 +35,9 @@ class ItemCell: UITableViewCell {
     }
     
     func updateWithItem(_ item: FeedEntry) {
+        //reset cell 
+        backgroundColor = .systemBackground
+        votingsLabel.textColor = .systemTeal
         //entry title
         titleLabel.attributedText = item.title
         //entry date and author
