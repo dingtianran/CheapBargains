@@ -238,6 +238,9 @@ class NetworkingPipeline: NSObject {
             }
             chchlahKeyBucket.append(contentsOf: newIncomingBucket.map({ $0.id }))
         }
+        
+        caterForNotification()
+        
         return items
     }
     
@@ -429,10 +432,13 @@ extension NetworkingPipeline: UNUserNotificationCenterDelegate {
             // New entries from chchlah
             chchlahNewEntries = items.count
         }
-        
+    }
+    
+    func caterForNotification() {
         // Figure out what notification fit to send
         let content = UNMutableNotificationContent()
         let identifier = "FeedUpdated"
+        content.badge = NSNumber(value: cheapiesNewEntries + ozbNewEntries + chchlahNewEntries)
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
         if cheapiesNewEntries > 0 && ozbNewEntries == 0 && chchlahNewEntries == 0 {
             content.title = "New goodies arrived at \"Cheapies\""
