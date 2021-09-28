@@ -7,7 +7,7 @@
 
 import UIKit
 import Combine
-
+/*
 class SourceViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     private var cancellables: Set<AnyCancellable> = []
@@ -63,3 +63,4 @@ extension SourceViewController: UITableViewDelegate, UITableViewDataSource {
         NetworkingPipeline.shared.markSourceReadForIndex(indexPath.row + 1)
     }
 }
+*/

@@ -32,9 +32,10 @@ class NetworkingPipeline: NSObject {
     
     @Published private(set) var refreshFrequency: Double = 0.0
     @Published private(set) var sourceIndex = 1
-    @Published private(set) var cheapiesNewEntries: Int = 0
-    @Published private(set) var ozbNewEntries: Int = 0
-    @Published private(set) var chchlahNewEntries: Int = 0
+//    @Published private(set) var cheapiesNewEntries: Int = 0
+//    @Published private(set) var ozbNewEntries: Int = 0
+//    @Published private(set) var chchlahNewEntries: Int = 0
+    @Published private(set) var unreadCounts: [Int: Int] = [Int: Int]()
     
     var darkMode: Bool = false
     {//Whenever title color changed, re-render every titles
@@ -82,13 +83,14 @@ class NetworkingPipeline: NSObject {
     func markSourceReadForIndex(_ source: Int) {
         sourceIndex = source
         // Mark unread entries zero after user switched feed
-        if source == 1 && cheapiesNewEntries != 0 {
-            cheapiesNewEntries = 0
-        } else if source == 2 && ozbNewEntries != 0{
-            ozbNewEntries = 0
-        } else if source == 3 && chchlahNewEntries != 0 {
-            chchlahNewEntries = 0
-        }
+        unreadCounts[source] = 0
+//        if source == 1 && cheapiesNewEntries != 0 {
+//            cheapiesNewEntries = 0
+//        } else if source == 2 && ozbNewEntries != 0{
+//            ozbNewEntries = 0
+//        } else if source == 3 && chchlahNewEntries != 0 {
+//            chchlahNewEntries = 0
+//        }
     }
     
     //Return isReady
@@ -424,13 +426,13 @@ extension NetworkingPipeline: UNUserNotificationCenterDelegate {
     func handleNewIncoming(items: [FeedEntry], for source: String) {
         if source == "Cheapies" {
             // New entries from cheapies
-            cheapiesNewEntries = items.count
+            unreadCounts[1] = items.count
         } else if source == "OzBargain" {
             // New entries from ozb
-            ozbNewEntries = items.count
+            unreadCounts[2] = items.count
         } else if source == "CheapcheapLah" {
             // New entries from chchlah
-            chchlahNewEntries = items.count
+            unreadCounts[3] = items.count
         }
     }
     
@@ -438,8 +440,11 @@ extension NetworkingPipeline: UNUserNotificationCenterDelegate {
         // Figure out what notification fit to send
         let content = UNMutableNotificationContent()
         let identifier = "FeedUpdated"
-        content.badge = NSNumber(value: cheapiesNewEntries + ozbNewEntries + chchlahNewEntries)
+        content.badge = NSNumber(value: Array(unreadCounts).count)
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+        let cheapiesNewEntries = unreadCounts[1] ?? 0
+        let ozbNewEntries = unreadCounts[2] ?? 0
+        let chchlahNewEntries = unreadCounts[3] ?? 0
         if cheapiesNewEntries > 0 && ozbNewEntries == 0 && chchlahNewEntries == 0 {
             content.title = "New goodies arrived at \"Cheapies\""
             let request = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)

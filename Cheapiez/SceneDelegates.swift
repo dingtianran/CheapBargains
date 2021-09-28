@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SwiftUI
 
 // MARK: - Main scene delegate
 class SceneDelegate: UIResponder, UIWindowSceneDelegate, NSToolbarDelegate {
@@ -24,9 +25,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate, NSToolbarDelegate {
         svc.preferredPrimaryColumnWidth = 250
         
         let stb = UIStoryboard(name: "Main", bundle: Bundle.main)
-        let source = stb.instantiateViewController(withIdentifier: "SourceViewController")
+//        let source = stb.instantiateViewController(withIdentifier: "SourceViewController")
+        let feed = UIHostingController(rootView: FeedSourcesView())
+        feed.view.backgroundColor = .clear
         let main = stb.instantiateViewController(withIdentifier: "MainViewController")
-        svc.viewControllers = [source, main]
+        svc.viewControllers = [feed, main]
         
         UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.forEach { windowScene in
             windowScene.sizeRestrictions?.minimumSize = CGSize(width: 480, height: 640)
