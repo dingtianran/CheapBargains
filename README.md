@@ -1,6 +1,6 @@
 # 💸Cheapies/OzBargain/CheapcheapLah RSS reader for macOS💸
 
-## Download the latest version at the sidebar 👉
+## Download the latest version 👉 [Link](https://github.com/dingtianran/CheapBargains/releases/latest/download/Cheapiez.app.zip)
 
 <img width="800" alt="screenshot" src="https://raw.githubusercontent.com/dingtianran/CheapBargains/main/Resources/screenshot.png">
 
@@ -22,7 +22,7 @@ Note: App icon was rendered by Blender, you'll find the `money.blend` and textur
 
 ## Features
 * View "latest" posts from [ChoiceCheapies🇳🇿](https://www.cheapies.nz)/[OzBargain🇦🇺](https://www.ozbargain.com.au/)/[CheapcheapLah🇸🇬](https://www.cheapcheaplah.com/).
-* A basic UI which respect latest Apple guidelines.
+* A basic UI which respect latest Apple guidelines, and with unread numbers on each feed.
 * Automatically refreshing every a few minutes, with notification.
 * No tracker, no profiling, no collecting data.
 * Light/Dark mode switch
