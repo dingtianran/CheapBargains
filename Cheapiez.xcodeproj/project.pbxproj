@@ -21,10 +21,11 @@
 		6F4BFE06251C53CF009A5AA3 /* RSSModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4BFE05251C53CF009A5AA3 /* RSSModels.swift */; };
 		6F651B9C25229FFA006F501B /* NetworkingPipeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F651B9B25229FFA006F501B /* NetworkingPipeline.swift */; };
 		6F93B3742594321300BBC0E0 /* NotificationHub.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F93B3732594321300BBC0E0 /* NotificationHub.swift */; };
+		6F987B7E27052DDF00CFD1A0 /* FeedModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F987B7D27052DDF00CFD1A0 /* FeedModels.swift */; };
+		6F987B80270661B000CFD1A0 /* FeedSourceViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F987B7F270661B000CFD1A0 /* FeedSourceViewModel.swift */; };
 		6F9A3CB1251D7E0D00144130 /* AlamofireImage in Frameworks */ = {isa = PBXBuildFile; productRef = 6F9A3CB0251D7E0D00144130 /* AlamofireImage */; };
 		6FB320E226A629BB00636604 /* AppKitController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FB320E126A629BB00636604 /* AppKitController.swift */; };
 		6FB320E426A6576D00636604 /* AllExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FB320E326A6576D00636604 /* AllExtensions.swift */; };
-		6FB320E626A6609500636604 /* SourceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FB320E526A6609500636604 /* SourceViewController.swift */; };
 		6FB41AA627029F6C007CE31F /* FeedDetailListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FB41AA527029F6C007CE31F /* FeedDetailListViewModel.swift */; };
 		6FC60A67254674C300D4094A /* SettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FC60A66254674C300D4094A /* SettingViewController.swift */; };
 /* End PBXBuildFile section */
@@ -46,11 +47,12 @@
 		6F651B9B25229FFA006F501B /* NetworkingPipeline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkingPipeline.swift; sourceTree = "<group>"; };
 		6F651B9F2522C276006F501B /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		6F93B3732594321300BBC0E0 /* NotificationHub.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationHub.swift; sourceTree = "<group>"; };
+		6F987B7D27052DDF00CFD1A0 /* FeedModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedModels.swift; sourceTree = "<group>"; };
+		6F987B7F270661B000CFD1A0 /* FeedSourceViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedSourceViewModel.swift; sourceTree = "<group>"; };
 		6FB320D926A629AA00636604 /* AppKitIntegration.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AppKitIntegration.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6FB320DC26A629AA00636604 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6FB320E126A629BB00636604 /* AppKitController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppKitController.swift; sourceTree = "<group>"; };
 		6FB320E326A6576D00636604 /* AllExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AllExtensions.swift; sourceTree = "<group>"; };
-		6FB320E526A6609500636604 /* SourceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SourceViewController.swift; sourceTree = "<group>"; };
 		6FB41AA527029F6C007CE31F /* FeedDetailListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedDetailListViewModel.swift; sourceTree = "<group>"; };
 		6FC60A66254674C300D4094A /* SettingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -105,7 +107,6 @@
 				6F4BFDC3251AC05E009A5AA3 /* SceneDelegates.swift */,
 				6F4BFDC5251AC05E009A5AA3 /* MainViewController.swift */,
 				6F33978026F696D800899C3D /* FeedSourcesView.swift */,
-				6FB320E526A6609500636604 /* SourceViewController.swift */,
 				6FC60A66254674C300D4094A /* SettingViewController.swift */,
 				6F4BFDF1251B0E06009A5AA3 /* ItemCell.swift */,
 				6F651B9B25229FFA006F501B /* NetworkingPipeline.swift */,
@@ -131,6 +132,7 @@
 		6FB41AA72702A76E007CE31F /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
+				6F987B7F270661B000CFD1A0 /* FeedSourceViewModel.swift */,
 				6FB41AA527029F6C007CE31F /* FeedDetailListViewModel.swift */,
 			);
 			path = ViewModels;
@@ -141,6 +143,7 @@
 			children = (
 				6F33978226F8148400899C3D /* Config.json */,
 				6F4BFE05251C53CF009A5AA3 /* RSSModels.swift */,
+				6F987B7D27052DDF00CFD1A0 /* FeedModels.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -267,12 +270,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				6F4BFDF2251B0E06009A5AA3 /* ItemCell.swift in Sources */,
+				6F987B7E27052DDF00CFD1A0 /* FeedModels.swift in Sources */,
 				6F4BFDC6251AC05E009A5AA3 /* MainViewController.swift in Sources */,
 				6F33978126F696D800899C3D /* FeedSourcesView.swift in Sources */,
 				6F4BFE06251C53CF009A5AA3 /* RSSModels.swift in Sources */,
 				6FB320E426A6576D00636604 /* AllExtensions.swift in Sources */,
 				6F651B9C25229FFA006F501B /* NetworkingPipeline.swift in Sources */,
-				6FB320E626A6609500636604 /* SourceViewController.swift in Sources */,
+				6F987B80270661B000CFD1A0 /* FeedSourceViewModel.swift in Sources */,
 				6F4BFDC2251AC05E009A5AA3 /* AppDelegate.swift in Sources */,
 				6FC60A67254674C300D4094A /* SettingViewController.swift in Sources */,
 				6FB41AA627029F6C007CE31F /* FeedDetailListViewModel.swift in Sources */,
@@ -426,7 +430,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Cheapiez/Cheapiez.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 40;
+				CURRENT_PROJECT_VERSION = 50;
 				DEVELOPMENT_TEAM = 9SC758JJ9F;
 				INFOPLIST_FILE = Cheapiez/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
@@ -436,7 +440,7 @@
 					"@executable_path/Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MARKETING_VERSION = 1.3;
+				MARKETING_VERSION = 1.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.iDing.cheapieshub;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTS_MACCATALYST = YES;
@@ -452,7 +456,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Cheapiez/Cheapiez.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 40;
+				CURRENT_PROJECT_VERSION = 50;
 				DEVELOPMENT_TEAM = 9SC758JJ9F;
 				INFOPLIST_FILE = Cheapiez/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
@@ -462,7 +466,7 @@
 					"@executable_path/Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MARKETING_VERSION = 1.3;
+				MARKETING_VERSION = 1.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.iDing.cheapieshub;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTS_MACCATALYST = YES;

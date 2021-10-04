@@ -1,13 +1,16 @@
 [{
     "id": 1,
     "feedName": "ChoiceCheapies",
-    "feedFlag": "🇳🇿"
+    "feedFlag": "🇳🇿",
+    "unread": 10
 }, {
     "id": 2,
     "feedName": "OzBargain",
-    "feedFlag": "🇦🇺"
+    "feedFlag": "🇦🇺",
+    "unread": 10
 }, {
     "id": 3,
     "feedName": "CheapcheapLah",
-    "feedFlag": "🇸🇬"
+    "feedFlag": "🇸🇬",
+    "unread": 10
 }]
