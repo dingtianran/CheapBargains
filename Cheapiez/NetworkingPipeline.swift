@@ -21,6 +21,7 @@ class NetworkingPipeline: NSObject {
     var previousXMLStringData3: Data?
     var updatedDate: Date?
     var refreshTimer: Timer
+    var versionCheckTimer: Timer?
     let dateFormatter: DateFormatter
     
     var cheapiesRssItems: [FeedEntry]?
@@ -33,6 +34,8 @@ class NetworkingPipeline: NSObject {
     @Published private(set) var refreshFrequency: Double = 0.0
     @Published private(set) var sourceIndex = 1
     @Published private(set) var unreadCounts: [Int: Int] = [Int: Int]()
+    @Published private(set) var buildObsolete = false
+    @Published private(set) var newVersionAvailable = false
     
     var darkMode: Bool = false
     {//Whenever title color changed, re-render every titles
@@ -50,6 +53,10 @@ class NetworkingPipeline: NSObject {
         NotificationCenter.default.addObserver(forName: NSNotification.Name("NSApplicationDidBecomeActiveNotification"), object: nil, queue: .main) { (notification: Notification) in
             UIApplication.shared.applicationIconBadgeNumber = 0
         }
+        super.init()
+        // Check new version availibility and schedule routine cheking
+        self.versionCheckTimerHandler("")
+        self.versionCheckTimer = Timer.scheduledTimer(timeInterval: 3600, target: self, selector: #selector(versionCheckTimerHandler(_:)), userInfo: nil, repeats: true)
     }
     
     private static var rssFormatter: DateFormatter {
@@ -72,9 +79,27 @@ class NetworkingPipeline: NSObject {
         self.refreshTimer.tolerance = 300.0
     }
     
-    @objc func refreshTimerHandler(_ sender: Timer) {
-        print("Timer fired!")
+    @objc func refreshTimerHandler(_ sender: Any) {
         _ = reload(true)
+    }
+    
+    @objc func versionCheckTimerHandler(_ sender: Any) {
+        VersionChecker().checkVersion { result in
+            switch result {
+            case .success(let version):
+                if let thisVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {
+                    if Double(thisVersion) ?? 0.0 < Double(version.minimum) ?? 0.0 {
+                        // Force upgrade
+                        self.buildObsolete = true
+                    }
+                    if Double(thisVersion) ?? 0.0 < Double(version.latest) ?? 0.0 {
+                        self.newVersionAvailable = true
+                    }
+                }
+            case .failure(_):
+                print("failed")
+            }
+        }
     }
     
     func markSourceReadForIndex(_ source: Int) {
@@ -173,9 +198,11 @@ class NetworkingPipeline: NSObject {
             for child in xmlDoc.root["channel"]["item"].all! {
                 //assembly categories
                 var categories = [Category]()
-                for cate in child["category"].all! {
-                    if let domain = cate.attributes["domain"], let text = cate.value {
-                        categories.append(Category(domain: domain, text: text))
+                if let cates = child["category"].all {
+                    for cate in cates {
+                        if let domain = cate.attributes["domain"], let text = cate.value {
+                            categories.append(Category(domain: domain, text: text))
+                        }
                     }
                 }
                 //assembly other RSS entries
@@ -467,5 +494,47 @@ extension NetworkingPipeline: UNUserNotificationCenterDelegate {
             let request = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
             UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
         }
+    }
+}
+
+//MARK: - Version Checker
+
+struct Version: Codable {
+    let minimum: String
+    let latest: String
+}
+
+enum VersionCheckError: Error {
+    case failed
+    case failedToDecode
+    case invalidStatusCode
+}
+
+struct VersionChecker {
+    
+    func checkVersion(completion: @escaping ((Result<Version, Error>) -> Void)) {
+        
+        let url = URL(string: "https://cheapiez.tding.workers.dev/api/version")!
+        
+        let session = URLSession
+            .shared
+            .dataTask(with: url) { data, response, error in
+            guard let response = response as? HTTPURLResponse else {
+                return
+            }
+            
+            guard response.statusCode == 200 else {
+                completion(.failure(VersionCheckError.invalidStatusCode))
+                return
+            }
+            
+            guard let data = data, let responseModel = try? JSONDecoder().decode(Version.self, from: data) else {
+                completion(.failure(VersionCheckError.failedToDecode))
+                return
+            }
+            
+            completion(.success(responseModel))
+        }
+        session.resume()
     }
 }

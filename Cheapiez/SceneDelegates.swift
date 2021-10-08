@@ -25,7 +25,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate, NSToolbarDelegate {
         svc.preferredPrimaryColumnWidth = 250
         
         let stb = UIStoryboard(name: "Main", bundle: Bundle.main)
-//        let source = stb.instantiateViewController(withIdentifier: "SourceViewController")
         let feed = UIHostingController(rootView: FeedSourcesView())
         feed.view.backgroundColor = .clear
         let main = stb.instantiateViewController(withIdentifier: "MainViewController")

@@ -33,7 +33,7 @@ struct RSSItem {
     }()
 }
 
-struct FeedEntry {
+struct FeedEntry: Identifiable {
     let id: String
     let title: NSAttributedString
     let link: String

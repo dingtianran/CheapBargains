@@ -10,7 +10,11 @@ import Combine
 
 class MainViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var upgradeLabel: UILabel!
+    @IBOutlet weak var upgradeLabelHeight: NSLayoutConstraint!
+    
     private var cancellables: Set<AnyCancellable> = []
+    var dataSource: UITableViewDataSource?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,6 +31,33 @@ class MainViewController: UIViewController {
         }.store(in: &cancellables)
         
         reloadSourceFromRSS(forceRefresh: true)
+        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(downloadNewVersionHandler(_:)))
+        upgradeLabel.addGestureRecognizer(tapGesture)
+        
+        //Forced upgrading needed
+        NetworkingPipeline.shared.$buildObsolete.sink { [weak self] obsolete in
+            DispatchQueue.main.async {
+                if obsolete == true {
+                    let action = UIAlertAction(title: "I see", style: .default) { action in
+                        if let storeurl = URL(string: "https://github.com/dingtianran/CheapBargains/releases/latest/"), UIApplication.shared.canOpenURL(storeurl) {
+                            UIApplication.shared.open(storeurl)
+                        }
+                    }
+                    let alert = UIAlertController(title: "Obsolete Version", message: "To continue, please download new build", preferredStyle: .alert)
+                    alert.addAction(action)
+                    self?.present(alert, animated: true, completion: nil)
+                }
+            }
+        }.store(in: &cancellables)
+        
+        //New build available
+        NetworkingPipeline.shared.$newVersionAvailable.sink { [weak self] newVersion in
+            DispatchQueue.main.async {
+                self?.upgradeLabelHeight.constant = newVersion == true ? 34 : 0
+                self?.upgradeLabel.isHidden = !newVersion
+            }
+        }.store(in: &cancellables)
     }
     
     func reloadSourceFromRSS(forceRefresh: Bool) {
@@ -45,6 +76,12 @@ class MainViewController: UIViewController {
     
     @IBAction func notifyValueChanged(_ sender: Any) {
         NotificationHub.shared.toggleNotification()
+    }
+    
+    @objc func downloadNewVersionHandler(_ sender: Any) {
+        if let storeurl = URL(string: "https://github.com/dingtianran/CheapBargains/releases/latest/"), UIApplication.shared.canOpenURL(storeurl) {
+            UIApplication.shared.open(storeurl)
+        }
     }
     
     @IBAction func settingsButtonPressed(_ sender: Any) {
