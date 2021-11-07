@@ -47,8 +47,11 @@ class ItemCell: UITableViewCell {
         //votings
         votingsLabel.attributedText = item.votings
         //thumbnail image
-        guard let url = URL(string: item.imageURL) else { return }
-        thumbnail.af.setImage(withURL: url)
+        if let url = URL(string: item.imageURL) {
+            thumbnail.af.setImage(withURL: url)
+        } else {
+            thumbnail.image = UIImage(systemName: "photo.on.rectangle.angled")
+        }
     }
     
     @objc func hovering(_ recognizer: UIHoverGestureRecognizer) {

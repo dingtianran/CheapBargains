@@ -339,7 +339,7 @@ class NetworkingPipeline: NSObject {
         let input = rssModel.description ?? ""
         let html = formattingDescription(input)
         let fullHtml = (darkMode==true ? htmlHeadDark:htmlHeadLight) + html + htmlTail
-        let data = Data(fullHtml.utf8)
+        let data = fullHtml.data(using: .unicode) ?? fullHtml.data(using: .utf8) ?? Data()
         let desc = try? NSAttributedString(data: data, options: [.documentType: NSAttributedString.DocumentType.html], documentAttributes: nil)
         
         //categorys
